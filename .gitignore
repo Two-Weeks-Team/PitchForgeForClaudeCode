@@ -48,6 +48,7 @@ coverage/
 tests/fixtures/**/.generated/
 tests/fixtures/**/.exports/
 tests/fixtures/.v05-variety/
+tests/fixtures/.v05-standalone/
 exports/
 
 # Secrets

@@ -1062,6 +1062,9 @@ def main(argv: list[str]) -> int:
     p.add_argument("--palette", default="oklch-warm-gold", help="color palette name (Tier 1 Auto only)")
     p.add_argument("--hero", default=None, help="hero copy verbatim (Tier 1 Auto only; default = paper-title pattern)")
     p.add_argument("--capture", action="store_true", help="enable in-browser MediaRecorder capture (v0.5+)")
+    p.add_argument("--frame-spec", default=None,
+                   help="reuse an existing frame-spec.json (skip P2 regeneration; "
+                        "used by /pitch:reorder so reorder reflow survives)")
     args = p.parse_args(argv)
 
     output = Path(args.output)
@@ -1083,7 +1086,16 @@ def main(argv: list[str]) -> int:
     # disk regardless of how the brief got there.
     write_json(output.parent / "brief.json", brief)
 
-    spec = build_frame_spec(brief)
+    if args.frame_spec:
+        # /pitch:reorder path — caller has already produced an updated
+        # frame-spec.json. Honor it instead of regenerating from arc.
+        spec_src = Path(args.frame_spec)
+        if not spec_src.exists():
+            print(f"[FAIL] --frame-spec not found: {spec_src}", file=sys.stderr)
+            return 2
+        spec = load_json(spec_src)
+    else:
+        spec = build_frame_spec(brief)
     write_json(output.parent / "frame-spec.json", spec)
 
     deck_config = build_deck_config(brief, spec)
