@@ -1,0 +1,25 @@
+{
+  "$schema_version": "0.1.0",
+  "name": "teaser-45s",
+  "runtime_seconds": 45,
+  "description": "Wow → kick → outro. No explanation, no architecture. For social media, ad spots, landing-page background loops. The hero copy holds the entire 25s wow beat — that's all the audience gets.",
+  "hero_copy_placement": ["F4_primary"],
+  "color_arc": [
+    {"frame_id": "cover", "palette_role": "hero"},
+    {"frame_id": "F4",    "palette_role": "hero"},
+    {"frame_id": "F5",    "palette_role": "problem"},
+    {"frame_id": "F11",   "palette_role": "hero"},
+    {"frame_id": "close", "palette_role": "pivot"}
+  ],
+  "beats": [
+    {"frame_id": "cover", "position": 1, "shape": "cover",         "act": "cover",  "time_start_seconds": 0,  "duration_seconds": 4,  "concept": "Title card", "stock_heading": "{{project_name}}", "stock_voiceover": "", "show_echo_ribbon": false, "delivery_note": "Hold 4s.", "tone_note": "title-card calm"},
+    {"frame_id": "F4",    "position": 2, "shape": "gallery-hero",  "act": "drop",   "time_start_seconds": 4,  "duration_seconds": 25, "concept": "Hero gallery + paper-title hero copy — entire teaser hangs here", "stock_voiceover": "Look — <b>{{hero_copy}}</b>", "show_echo_ribbon": false, "navbar_keys_label": "★ TEASER WOW · 25s full hold · loop-friendly", "delivery_note": "Read the hero slowly — twice if the runtime allows. Half-beat silence between.", "tone_note": "keynote reveal — held"},
+    {"frame_id": "F5",    "position": 3, "shape": "counter-roll",  "act": "thrill", "time_start_seconds": 29, "duration_seconds": 6,  "concept": "Kick — the number that closes the deal", "stock_meta_tag": "act ii · the kick", "stock_script_h2": "The scale.", "stock_voiceover": "How many? <b>{{counter_target}} {{counter_unit}}.</b>", "show_echo_ribbon": true, "delivery_note": "Audience question. Then snap the number.", "tone_note": "rule-of-three confidence"},
+    {"frame_id": "F11",   "position": 4, "shape": "repo-install",  "act": "outro",  "time_start_seconds": 35, "duration_seconds": 5,  "concept": "Outro — repo + install + hero echo", "stock_meta_tag": "act ii · outro", "stock_script_h2": "Two commands. Done.", "stock_voiceover": "Two commands to install. <b>{{hero_copy}}</b>", "show_echo_ribbon": true, "delivery_note": "Hero echo last. Slowly.", "tone_note": "arrival"},
+    {"frame_id": "close", "position": 5, "shape": "close",         "act": "close",  "time_start_seconds": 40, "duration_seconds": 5,  "concept": "Closing card", "stock_voiceover": "", "show_echo_ribbon": false, "delivery_note": "Hold 5s.", "tone_note": "title-card close"}
+  ],
+  "ranges": {
+    "opening": {"start_position": 2, "end_position": 2, "label": "opening · F4 only · 25s",  "button_label": "▶ Opening · F4 (25s)",  "key": "o"},
+    "full":    {"start_position": 2, "end_position": 4, "label": "full · F4 → F11 · 36s",    "button_label": "▶ Full · F4→F11 (36s)", "key": "f"}
+  }
+}

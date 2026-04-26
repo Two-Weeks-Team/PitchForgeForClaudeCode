@@ -1,0 +1,32 @@
+{
+  "_schema_version": "0.1.0",
+  "_filled_ratio": 0.83,
+  "project_name": "PitchForge",
+  "project_one_liner": "Project context to a 60-300 second cinematic recording-ready demo deck through 7 phases.",
+  "audience": "hackathon-judges",
+  "runtime_seconds": 160,
+  "narrative_arc": "wow-first",
+  "hero_copy": "Pitch is all you need.",
+  "hero_pattern": "paper-title-inversion",
+  "color_palette": "oklch-warm-gold",
+  "tone": "agro-drop-thrill",
+  "judging_criteria": [
+    {"name": "Demo",        "weight": 0.30},
+    {"name": "Recording",   "weight": 0.25},
+    {"name": "Methodology", "weight": 0.25},
+    {"name": "Recursive",   "weight": 0.20}
+  ],
+  "prize_categories": ["most-creative-opus", "keep-thinking", "managed-agents"],
+  "key_visuals": [
+    "13-slide deck navigation",
+    "144 → 160s metric counter",
+    "7-phase pipeline diagram"
+  ],
+  "constraints": ["english-only", "single-html", "no-third-party-deps"],
+  "version": "v1.0.0",
+  "tagline": "PITCHFORGE · 7-PHASE PIPELINE · v1.0.0",
+  "backup_variants": [
+    "if MediaRecorder unsupported → fall back to OBS instructions",
+    "if hero copy lands flat → /pitch:hero regenerates 5 candidates"
+  ]
+}

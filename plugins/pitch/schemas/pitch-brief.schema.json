@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://two-weeks-team.github.io/PitchForgeForClaudeCode/schemas/pitch-brief.schema.json",
+  "title": "PitchForge Brief",
+  "description": "Output of Phase P1 — the Socratic interview. Drives all downstream phases.",
+  "type": "object",
+  "required": [
+    "_schema_version",
+    "_filled_ratio",
+    "project_name",
+    "audience",
+    "runtime_seconds",
+    "narrative_arc"
+  ],
+  "properties": {
+    "_schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "_filled_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+    "project_name": { "type": "string", "maxLength": 80 },
+    "project_one_liner": { "type": "string", "maxLength": 280 },
+    "audience": {
+      "type": "string",
+      "enum": ["hackathon-judges", "investors", "customers", "internal-team", "conference-audience"]
+    },
+    "runtime_seconds": { "type": "integer", "minimum": 30, "maximum": 600 },
+    "narrative_arc": {
+      "type": "string",
+      "enum": ["wow-first", "problem-first", "story", "teaser"]
+    },
+    "hero_copy": { "type": "string", "maxLength": 100 },
+    "hero_pattern": {
+      "type": "string",
+      "enum": ["paper-title-inversion", "stop-start", "first-reordering", "confession", "rule-of-three"]
+    },
+    "judging_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "weight"],
+        "properties": {
+          "name": { "type": "string" },
+          "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "prize_categories": { "type": "array", "items": { "type": "string" } },
+    "color_palette": {
+      "type": "string",
+      "enum": ["oklch-warm-gold", "monochrome-cinema", "pastel-light", "brand-default"]
+    },
+    "tone": {
+      "type": "string",
+      "enum": ["agro-drop-thrill", "calm-academic", "playful-warm", "corporate-clean"]
+    },
+    "key_visuals": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 0,
+      "maxItems": 20
+    },
+    "constraints": { "type": "array", "items": { "type": "string" } },
+    "backup_variants": { "type": "array", "items": { "type": "string" } }
+  }
+}

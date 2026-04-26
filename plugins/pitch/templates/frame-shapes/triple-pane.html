@@ -1,0 +1,44 @@
+<!--
+  Shape: triple-pane
+  Used for: F9 (build timelapse) — three independent timelines side-by-side
+  Default duration: 30s
+  Default animation timeline:
+    0.2s — pane 1 (spec) heading + first lines fade
+    0.4s — pane 2 (team) heading
+    0.6s — pane 3 (score) heading
+    0.5–2.9s — spec lines append right
+    1.2–2.4s — team rows append right
+    2.2s — score counter starts (0 → target with intermediate stops, dur 3800ms)
+    3.4s — spec lock badge pop
+    5.5s — score gauge fills
+    6.0–6.8s — score check marks pop sequentially
+
+  Slot variables:
+    {{pane_1}}, {{pane_2}}, {{pane_3}} — each is { kind, heading, items, finalizer }
+                                          where `kind` ∈ "spec" | "team" | "score"
+    {{counter_target}}    — score pane number (e.g. 499)
+    {{counter_max}}       — denominator (e.g. 500)
+    {{counter_stops}}     — comma list of intermediate eased stops (e.g. "412,478")
+
+  v0.1.0 ships a hardcoded variant in scripts/generate-deck.py for the
+  reference deck's "SpecDD · OpenAPI / 5 teams · parallel / TestDD · score"
+  composition. v0.5+ accepts arbitrary three-pane content.
+-->
+
+<div class="canvas-frame c-f9">
+  <span class="speed">{{speed_label}}</span>
+  <div class="triple">
+    <div class="pane {{pane_1.kind}}" data-anim="fade" style="--d:.2s">
+      <h5>{{pane_1.heading}}</h5>
+      {{pane_1.body_html}}
+    </div>
+    <div class="pane {{pane_2.kind}}" data-anim="fade" style="--d:.4s">
+      <h5>{{pane_2.heading}}</h5>
+      {{pane_2.body_html}}
+    </div>
+    <div class="pane {{pane_3.kind}}" data-anim="fade" style="--d:.6s">
+      <h5>{{pane_3.heading}}</h5>
+      {{pane_3.body_html}}
+    </div>
+  </div>
+</div>

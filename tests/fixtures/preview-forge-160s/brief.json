@@ -1,0 +1,28 @@
+{
+  "_schema_version": "0.1.0",
+  "_filled_ratio": 0.83,
+  "project_name": "Preview Forge",
+  "project_one_liner": "144 Opus 4.7 personas turn a one-line idea into a frozen full-stack app.",
+  "audience": "hackathon-judges",
+  "runtime_seconds": 160,
+  "narrative_arc": "wow-first",
+  "hero_copy": "Preview is all you need.",
+  "hero_pattern": "paper-title-inversion",
+  "color_palette": "oklch-warm-gold",
+  "tone": "agro-drop-thrill",
+  "judging_criteria": [
+    {"name": "Impact",       "weight": 0.30},
+    {"name": "Demo",         "weight": 0.25},
+    {"name": "Opus 4.7 use", "weight": 0.25},
+    {"name": "Depth",        "weight": 0.20}
+  ],
+  "prize_categories": ["most-creative-opus", "keep-thinking", "managed-agents"],
+  "key_visuals": [
+    "26-mockup gallery",
+    "144 counter",
+    "6-tier hierarchy diagram"
+  ],
+  "constraints": ["english-only", "single-html", "no-third-party-deps"],
+  "version": "v1.14.1",
+  "tagline": "PREVIEWDD · 3-DD METHODOLOGY · v1.14.1"
+}

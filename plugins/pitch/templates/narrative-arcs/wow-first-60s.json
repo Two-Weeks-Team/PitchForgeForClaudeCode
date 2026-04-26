@@ -1,0 +1,33 @@
+{
+  "$schema_version": "0.1.0",
+  "name": "wow-first-60s",
+  "runtime_seconds": 60,
+  "description": "Compressed wow-first arc — for 60s social-media demos and minute-long pitch reels. Same shape as wow-first-160s but every beat trims to its minimum. Perfect for Twitter / LinkedIn auto-play loops where the first 6s win or lose.",
+  "hero_copy_placement": ["F4_primary", "F11_echo"],
+  "color_arc": [
+    {"frame_id": "cover", "palette_role": "hero"},
+    {"frame_id": "F4",    "palette_role": "hero"},
+    {"frame_id": "F1",    "palette_role": "problem"},
+    {"frame_id": "F2",    "palette_role": "failure"},
+    {"frame_id": "F3",    "palette_role": "pivot"},
+    {"frame_id": "F5",    "palette_role": "problem"},
+    {"frame_id": "F10",   "palette_role": "payoff"},
+    {"frame_id": "F11",   "palette_role": "hero"},
+    {"frame_id": "close", "palette_role": "pivot"}
+  ],
+  "beats": [
+    {"frame_id": "cover", "position": 1, "shape": "cover",               "act": "cover",  "time_start_seconds": 0,  "duration_seconds": 4, "concept": "Title card", "stock_heading": "{{project_name}}", "stock_voiceover": "", "show_echo_ribbon": false, "delivery_note": "Hold 4s.", "tone_note": "title-card calm"},
+    {"frame_id": "F4",    "position": 2, "shape": "gallery-hero",        "act": "drop",   "time_start_seconds": 4,  "duration_seconds": 8, "concept": "Hero gallery + paper-title hero", "stock_voiceover": "Look. <b>{{hero_copy}}</b>", "show_echo_ribbon": false, "navbar_keys_label": "★ FAST WOW · 8s", "delivery_note": "Hero slowly. The first 6s decide everything.", "tone_note": "keynote reveal"},
+    {"frame_id": "F1",    "position": 3, "shape": "chain",               "act": "agro",   "time_start_seconds": 12, "duration_seconds": 5, "concept": "Problem framing", "stock_heading": "we don't know what we want.", "stock_heading_accent_word": "want.", "stock_meta_tag": "act ii · the agro", "stock_script_h2": "We've been lying.", "stock_voiceover": "We don't know what we want. <b>Until we see it.</b>", "show_echo_ribbon": true, "delivery_note": "Compressed. Two beats only.", "tone_note": "prosecutor opening"},
+    {"frame_id": "F2",    "position": 4, "shape": "stack-strikethrough", "act": "agro",   "time_start_seconds": 17, "duration_seconds": 5, "concept": "Failure cascade — 2 rows only", "stock_heading": "every time.", "stock_heading_accent_word": "time.", "stock_meta_tag": "act ii · indictment", "stock_script_h2": "Same blind spot.", "stock_voiceover": "Tests pass. Specs lock. <b>Product wrong.</b>", "show_echo_ribbon": true, "delivery_note": "Three fragments.", "tone_note": "indictment"},
+    {"frame_id": "F3",    "position": 5, "shape": "chain",               "act": "drop",   "time_start_seconds": 22, "duration_seconds": 5, "concept": "Pivot", "stock_heading": "flip the order.", "stock_heading_accent_word": "flip", "stock_meta_tag": "act iii · pivot", "stock_script_h2": "Result first.", "stock_voiceover": "We flipped it — see the result <i>first</i>. <b>The picture is the spec.</b>", "show_echo_ribbon": true, "delivery_note": "Em-dash held breath.", "tone_note": "maker who figured it out"},
+    {"frame_id": "F5",    "position": 6, "shape": "counter-roll",        "act": "thrill", "time_start_seconds": 27, "duration_seconds": 5, "concept": "Kick", "stock_meta_tag": "act iii · kick", "stock_script_h2": "The scale.", "stock_voiceover": "<b>{{counter_target}}.</b> {{counter_unit}}.", "show_echo_ribbon": true, "delivery_note": "Snap.", "tone_note": "rule-of-three"},
+    {"frame_id": "F10",   "position": 7, "shape": "terminal-browser",    "act": "thrill", "time_start_seconds": 32, "duration_seconds": 16, "concept": "Auto-launch payoff (compressed)", "stock_meta_tag": "act iv · payoff", "stock_script_h2": "Click two. Done.", "stock_voiceover": "How fast? <b>Click two.</b> Done. <b>Three minutes ago — this was one line.</b>", "show_echo_ribbon": true, "navbar_keys_label": "★ PAYOFF", "delivery_note": "Quiet awe.", "tone_note": "maker exhaling"},
+    {"frame_id": "F11",   "position": 8, "shape": "repo-install",        "act": "outro",  "time_start_seconds": 48, "duration_seconds": 6, "concept": "Outro + hero echo", "stock_meta_tag": "act iv · outro", "stock_script_h2": "Two commands. Done.", "stock_voiceover": "Two commands. <b>{{hero_copy}}</b>", "show_echo_ribbon": true, "delivery_note": "Hero echo last.", "tone_note": "arrival"},
+    {"frame_id": "close", "position": 9, "shape": "close",               "act": "close",  "time_start_seconds": 54, "duration_seconds": 6, "concept": "Closing card", "stock_voiceover": "", "show_echo_ribbon": false, "delivery_note": "Hold 6s.", "tone_note": "title-card close"}
+  ],
+  "ranges": {
+    "opening": {"start_position": 2, "end_position": 5, "label": "opening · F4 → F3 · 22s", "button_label": "▶ Opening · F4→F3 (22s)", "key": "o"},
+    "full":    {"start_position": 2, "end_position": 8, "label": "full · F4 → F11 · 50s",   "button_label": "▶ Full · F4→F11 (50s)",   "key": "f"}
+  }
+}

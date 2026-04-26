@@ -1,0 +1,41 @@
+<!--
+  Shape: terminal-browser
+  Used for: F10 (auto-launch — payoff) — terminal log + browser opening on right
+  Default duration: 15s
+  Default animation timeline:
+    0.2–2.3s — terminal lines append every 0.2–0.4s
+    1.4s — deploy button click pulse (CSS keyframe aDeploy)
+    2.2s — browser2 slides in from right (CSS keyframe aBrowserSlide)
+    3.3+s — browser body items append (right-slide)
+
+  Slot variables:
+    {{terminal_lines}}     — array of { delay, kind: "ok"|"arr"|"text", text }
+    {{deploy_label}}       — text inside the green deploy button (default "Deploy ✓")
+    {{browser_url}}        — URL bar content
+    {{browser_h4}}         — h4 heading rendered inside the browser
+    {{browser_items}}      — array of { delay, label, badge_text } for the right-pane list
+-->
+
+<div class="canvas-frame c-f10">
+  <div class="term">
+    {{#each terminal_lines}}
+    <div data-anim="right" style="--d:{{delay}}s{{#if extra_style}};{{extra_style}}{{/if}}">
+      {{#if kind_ok}}<span class="ok">✓</span> {{/if}}
+      {{#if kind_arr}}<span class="arr">{{arrow}}</span> {{/if}}
+      {{text}}
+    </div>
+    {{/each}}
+  </div>
+  <div class="deploybtn">{{deploy_label}}</div>
+  <div class="browser2">
+    <div class="bar"><span class="url">{{browser_url}}</span></div>
+    <div class="body">
+      <h4 data-anim="up" style="--d:3.3s">{{browser_h4}}</h4>
+      {{#each browser_items}}
+      <div class="item" data-anim="right" style="--d:{{delay}}s">
+        <span>{{label}}</span><span class="badge">{{badge_text}}</span>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</div>

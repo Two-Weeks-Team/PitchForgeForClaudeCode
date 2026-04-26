@@ -1,0 +1,26 @@
+<!--
+  Shape: counter-roll
+  Used for: F5 (kick — 0 → N reveal)
+  Default duration: 5s
+  Default animation timeline:
+    0.0s  — counter starts (eased cubic, dur 1400ms)
+    0.2s  — label fade
+    2.6s  — breakdown line fade
+
+  Slot variables:
+    {{label}}         — small all-caps tracker above the count (e.g. "how many opus 4.7 personas built that gallery?")
+    {{target}}        — final integer (e.g. 144)
+    {{duration_ms}}   — counter animation duration in ms (default 1400)
+    {{stops}}         — optional intermediate stops, comma-separated (e.g. "412,478"); empty for single eased count
+    {{breakdown}}     — single-line breakdown (e.g. "26 advocates · 40 panelists · ...")
+-->
+
+<div class="canvas-frame c-f5">
+  <div class="lbl" data-anim="up" style="--d:.2s">{{label}}</div>
+  <div class="count num-roll"
+       data-counter
+       data-target="{{target}}"
+       data-dur="{{duration_ms}}"
+       data-stops="{{stops}}">0</div>
+  <div class="breakdown" data-anim="fade" style="--d:2.6s">{{breakdown}}</div>
+</div>

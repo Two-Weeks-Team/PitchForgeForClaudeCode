@@ -1,0 +1,56 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Node / pnpm
+node_modules/
+pnpm-debug.log*
+.pnpm-store/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Build / runtime
+dist/
+build/
+.cache/
+*.log
+
+# PitchForge runtime
+runs/
+~/.pitch-forge/
+*.tmp.html
+*.preview.html
+
+# Captured recordings (do NOT commit binaries)
+*.mp4
+*.webm
+*.mov
+*.gif
+captures/
+
+# Test artifacts
+.coverage
+coverage/
+.pytest_cache/
+tests/fixtures/**/.generated/
+tests/fixtures/**/.exports/
+tests/fixtures/.v05-variety/
+exports/
+
+# Secrets
+.env
+.env.*
+!.env.example

@@ -1,0 +1,34 @@
+{
+  "$schema_version": "0.1.0",
+  "name": "pastel-light",
+  "description": "Light background with muted pastel accents. Consumer-product launches, lifestyle, education. The same six role assignments are preserved — only the lightness axis flips (L 0.92 base, L 0.20 text). Avoid for hackathon / B2B contexts where the dark cinema base lands harder.",
+  "compatibility": {
+    "browsers": "Chrome 113+, Safari 17+, Firefox 113+",
+    "color_space": "oklch"
+  },
+  "roles": {
+    "hero":         "oklch(0.62 0.14 90)",
+    "problem":      "oklch(0.65 0.10 65)",
+    "failure":      "oklch(0.58 0.18 25)",
+    "pivot":        "oklch(0.66 0.12 145)",
+    "architecture": "oklch(0.60 0.12 290)",
+    "payoff":       "oklch(0.66 0.12 145)"
+  },
+  "tokens": {
+    "bg":         "oklch(0.96 0.01 90)",
+    "bg-2":       "oklch(0.92 0.02 90)",
+    "surface":    "oklch(0.88 0.02 90)",
+    "surface-2":  "oklch(0.84 0.025 90)",
+    "line":       "oklch(0.78 0.03 90)",
+    "text":       "oklch(0.20 0.02 250)",
+    "muted":      "oklch(0.42 0.02 250)",
+    "warm":       "oklch(0.68 0.13 65)",
+    "warm-deep":  "oklch(0.55 0.16 50)",
+    "cool":       "oklch(0.62 0.10 220)",
+    "green":      "oklch(0.66 0.12 145)",
+    "pink":       "oklch(0.66 0.13 350)",
+    "violet":     "oklch(0.60 0.12 290)",
+    "red":        "oklch(0.58 0.18 25)",
+    "gold":       "oklch(0.62 0.14 90)"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema_version": "0.1.0",
+  "name": "oklch-warm-gold",
+  "description": "Default palette — extracted from the reference deck examples/preview-forge-160s/. Dark cinema base (oklch L≈0.10) with gold/red/green/violet accents on a warm hue axis.",
+  "compatibility": {
+    "browsers": "Chrome 113+, Safari 17+, Firefox 113+",
+    "color_space": "oklch"
+  },
+  "roles": {
+    "hero":         "oklch(0.84 0.15 90)",
+    "problem":      "oklch(0.78 0.16 65)",
+    "failure":      "oklch(0.72 0.21 25)",
+    "pivot":        "oklch(0.78 0.17 145)",
+    "architecture": "oklch(0.72 0.18 290)",
+    "payoff":       "oklch(0.78 0.17 145)"
+  },
+  "tokens": {
+    "bg":         "oklch(0.10 0.02 250)",
+    "bg-2":       "oklch(0.16 0.025 250)",
+    "surface":    "oklch(0.20 0.03 250)",
+    "surface-2":  "oklch(0.26 0.035 250)",
+    "line":       "oklch(0.32 0.04 250)",
+    "text":       "oklch(0.96 0.01 250)",
+    "muted":      "oklch(0.66 0.02 250)",
+    "warm":       "oklch(0.78 0.16 65)",
+    "warm-deep":  "oklch(0.62 0.18 50)",
+    "cool":       "oklch(0.74 0.13 220)",
+    "green":      "oklch(0.78 0.17 145)",
+    "pink":       "oklch(0.74 0.18 350)",
+    "violet":     "oklch(0.72 0.18 290)",
+    "red":        "oklch(0.72 0.21 25)",
+    "gold":       "oklch(0.84 0.15 90)"
+  }
+}

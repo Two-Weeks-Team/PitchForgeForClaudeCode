@@ -1,0 +1,203 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://two-weeks-team.github.io/PitchForgeForClaudeCode/schemas/recording-config.schema.json",
+  "title": "PitchForge Recording Config",
+  "description": "Phase P7 (recording-engineer) output. Drives cinematic-mode JS — countdown overlay, range playback, modifier-key safety, optional MediaRecorder capture.",
+  "type": "object",
+  "required": [
+    "_schema_version",
+    "_deck_config_run_id",
+    "modes",
+    "keymap",
+    "countdown",
+    "ranges",
+    "modifier_safety"
+  ],
+  "properties": {
+    "_schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "_deck_config_run_id": {
+      "type": "string",
+      "description": "Hash of the deck-config that produced this recording layer."
+    },
+    "modes": {
+      "type": "object",
+      "required": ["review", "recording", "cinematic"],
+      "properties": {
+        "review": {
+          "type": "object",
+          "description": "Default mode — chrome visible, control panel visible.",
+          "properties": {
+            "body_class": { "type": "string", "default": "" }
+          }
+        },
+        "recording": {
+          "type": "object",
+          "description": "Chrome hidden, floating ● timer visible. Toggled by R.",
+          "required": ["body_class"],
+          "properties": {
+            "body_class": { "type": "string", "default": "rec" },
+            "floating_timer": { "type": "boolean", "default": true }
+          }
+        },
+        "cinematic": {
+          "type": "object",
+          "description": "Recording + on-canvas VO box hidden + auto-advance + countdown. Triggered by O / F.",
+          "required": ["body_class"],
+          "properties": {
+            "body_class": { "type": "string", "default": "rec cinematic" },
+            "hide_vo_overlay": { "type": "boolean", "default": true },
+            "hide_floating_timer": {
+              "type": "boolean",
+              "default": true,
+              "description": "From L5 — cinematic must hide the recording timer too. Bug-fixed."
+            }
+          }
+        }
+      }
+    },
+    "keymap": {
+      "type": "object",
+      "description": "Key → action map. All bindings must clear modifier-key safety guard.",
+      "required": ["next", "prev", "first", "last", "overview", "toggle_rec", "toggle_auto", "replay"],
+      "properties": {
+        "next": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["ArrowRight", "ArrowDown", " ", "PageDown", "Enter"]
+        },
+        "prev": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["ArrowLeft", "ArrowUp", "PageUp"]
+        },
+        "first": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["Home"]
+        },
+        "last": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["End"]
+        },
+        "overview": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["Escape"]
+        },
+        "toggle_rec": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["r", "R"]
+        },
+        "toggle_auto": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["a", "A"]
+        },
+        "replay": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["p", "P"]
+        }
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "countdown": {
+      "type": "object",
+      "required": ["sequence", "cadence_ms"],
+      "properties": {
+        "sequence": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 2,
+          "default": ["3", "2", "1", "GO"]
+        },
+        "cadence_ms": {
+          "type": "integer",
+          "minimum": 200,
+          "maximum": 5000,
+          "default": 1000
+        },
+        "label_template": {
+          "type": "string",
+          "default": "CINEMATIC PLAYBACK STARTS IN… ${range_label}"
+        }
+      }
+    },
+    "ranges": {
+      "type": "array",
+      "description": "Range-bounded playback options. Mirrors deck-config.ranges with capture intent.",
+      "items": {
+        "type": "object",
+        "required": ["key", "start_position", "end_position", "label"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1
+          },
+          "start_position": { "type": "integer", "minimum": 1 },
+          "end_position": { "type": "integer", "minimum": 1 },
+          "label": { "type": "string" },
+          "capture": {
+            "type": "boolean",
+            "default": false,
+            "description": "v0.5+ MediaRecorder capture during this range."
+          }
+        }
+      }
+    },
+    "modifier_safety": {
+      "type": "object",
+      "required": ["guard_metaKey", "guard_ctrlKey", "guard_altKey"],
+      "description": "L1 lesson — keyboard handler must early-return when modifier keys are pressed so browser shortcuts pass through.",
+      "properties": {
+        "guard_metaKey": { "type": "boolean", "default": true },
+        "guard_ctrlKey": { "type": "boolean", "default": true },
+        "guard_altKey": { "type": "boolean", "default": true },
+        "guard_shiftKey": {
+          "type": "boolean",
+          "default": false,
+          "description": "Default false — shift is needed for capital-letter R/O/F/A/P key matches."
+        }
+      }
+    },
+    "capture": {
+      "type": "object",
+      "description": "v0.5+ MediaRecorder integration. Disabled in v0.1.0.",
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "mime_type": {
+          "type": "string",
+          "default": "video/webm;codecs=vp9,opus"
+        },
+        "bitrate_kbps": {
+          "type": "integer",
+          "minimum": 1000,
+          "default": 8000
+        },
+        "auto_download": { "type": "boolean", "default": true }
+      }
+    },
+    "obs_workflow": {
+      "type": "object",
+      "description": "Static instructions printed in /pitch:record output.",
+      "properties": {
+        "fps": { "type": "integer", "default": 30 },
+        "resolution": { "type": "string", "default": "1920x1080" },
+        "encoder": { "type": "string", "default": "H.264 two-pass" },
+        "browser_recommendation": {
+          "type": "string",
+          "default": "Chrome 142+ / Safari 18.2+ / Firefox 141+"
+        }
+      }
+    }
+  }
+}

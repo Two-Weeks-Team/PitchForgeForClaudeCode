@@ -1,0 +1,42 @@
+<!--
+  Shape: modal-live-json
+  Used for: F7 (Socratic / form interaction with live-filling structured output)
+  Default duration: 20s
+  Default animation timeline:
+    0.2s — typewriter: command line ($ /pf:new ...)
+    1.9s — modal appears (slide-up)
+    2.3-2.7s — options fade in; .sel pops with green border
+    3.3-5.6s — JSON keys append right-to-left (~0.4s apart)
+    6.2s — _filled_ratio ribbon bloom
+
+  Slot variables:
+    {{prompt_command}}     — the $ command typed first
+    {{question_label}}     — modal heading (e.g. "Question 1 / 4 · target_persona")
+    {{options}}            — array of {label, selected: bool}
+    {{json_filename}}      — small caps right-pane heading (e.g. "runs/<id>/idea.spec.json")
+    {{json_keys}}          — array of {key, value, kind: "string"|"number"|"array"}
+    {{ratio_status}}       — final ribbon text (e.g. "▣ ground-truth (≥ 0.7)")
+-->
+
+<div class="canvas-frame c-f7">
+  <div class="editor">
+    <div class="left">
+      <div class="pf tw" data-typewriter="{{prompt_command}}" data-tw-dur="1500" data-tw-delay="200"></div>
+      <div class="modal" data-anim="up" style="--d:1.9s">
+        <h4>{{question_label}}</h4>
+        {{#each options}}
+        <div class="opt{{#if selected}} sel{{/if}}" data-anim="{{#if selected}}pop{{else}}fade{{/if}}" style="--d:{{delay}}s">{{label}}</div>
+        {{/each}}
+      </div>
+    </div>
+    <div class="right">
+      <h5 data-anim="fade" style="--d:.4s">{{json_filename}}</h5>
+      <div data-anim="fade" style="--d:3.3s">{</div>
+      {{#each json_keys}}
+      <div data-anim="right" style="--d:{{delay}}s">&nbsp;&nbsp;<span class="k">"{{key}}"</span>: <span class="s">{{value}}</span>{{#unless last}},{{/unless}}</div>
+      {{/each}}
+      <div data-anim="fade" style="--d:5.6s">}</div>
+      <div class="ratio" data-anim="bloom" style="--d:6.2s">{{ratio_status}}</div>
+    </div>
+  </div>
+</div>

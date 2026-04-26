@@ -1,0 +1,38 @@
+{
+  "$schema": "https://code.claude.com/schemas/plugin.json",
+  "name": "pitch",
+  "version": "0.1.0",
+  "displayName": "PitchForge",
+  "description": "One Socratic interview → 7-phase workflow → cinematic, recording-ready demo deck.",
+  "author": "Two-Weeks-Team",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode.git"
+  },
+  "engines": {
+    "claudeCode": ">=2.0.0"
+  },
+  "model": {
+    "primary": "claude-opus-4-7",
+    "fallback": "claude-sonnet-4-6"
+  },
+  "components": {
+    "agents": "agents",
+    "commands": "commands",
+    "skills": "skills",
+    "hooks": "hooks",
+    "schemas": "schemas",
+    "memory": "memory"
+  },
+  "tags": [
+    "demo-video",
+    "pitch-deck",
+    "storyboard",
+    "cinematic",
+    "recording-ready",
+    "hackathon",
+    "keynote"
+  ]
+}

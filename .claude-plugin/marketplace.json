@@ -1,0 +1,33 @@
+{
+  "$schema": "https://code.claude.com/schemas/marketplace.json",
+  "name": "two-weeks-team",
+  "displayName": "Two-Weeks-Team Marketplace",
+  "description": "Sibling forges from Two-Weeks-Team. Use Preview Forge to build the app, PitchForge to film it.",
+  "homepage": "https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode",
+  "owner": {
+    "name": "Two-Weeks-Team",
+    "url": "https://github.com/Two-Weeks-Team"
+  },
+  "plugins": [
+    {
+      "name": "pitch",
+      "version": "0.1.0",
+      "displayName": "PitchForge",
+      "description": "One Socratic interview → 7-phase workflow → cinematic, recording-ready demo deck. Browser-native, OBS-ready, paper-grade hero copy, human-presenter delivery.",
+      "source": "./plugins/pitch",
+      "tags": [
+        "claude-code-plugin",
+        "demo-video",
+        "pitch-deck",
+        "storyboard",
+        "cinematic",
+        "recording-ready",
+        "hackathon",
+        "keynote",
+        "two-weeks-team"
+      ],
+      "license": "Apache-2.0",
+      "author": "Two-Weeks-Team"
+    }
+  ]
+}

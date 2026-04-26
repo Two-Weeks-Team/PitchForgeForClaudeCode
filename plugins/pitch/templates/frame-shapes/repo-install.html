@@ -1,0 +1,43 @@
+<!--
+  Shape: repo-install
+  Used for: F11 (outro — repo URL + badges + install snippet typewriter)
+  Default duration: 5s
+  Default animation timeline:
+    0.1s   — repo URL fade-up
+    0.5s+  — badges pop sequentially (0.1s apart, ~11 badges)
+    1.9s   — install snippet typewriter starts (dur 2200ms, delay 1900ms)
+    4.5s   — lockup bloom (Built with X + hero echo)
+
+  Slot variables:
+    {{repo_url}}             — e.g. "github.com/Two-Weeks-Team/PreviewForgeForClaudeCode"
+    {{repo_version}}         — e.g. "v1.14.1"
+    {{badges}}               — array of {label, variant} where variant ∈ green|warm|cool|"" (default)
+    {{install_command}}      — single-line shell command, may include \n for line breaks
+                                e.g. "$ /plugin marketplace add Two-Weeks-Team/PreviewForgeForClaudeCode\n$ /plugin install pf@two-weeks-team"
+    {{install_duration_ms}}  — typewriter total duration (default 2200)
+    {{install_delay_ms}}     — typewriter delay before start (default 1900)
+    {{lockup_text}}          — pre-hero lockup (e.g. "Built with <b>Claude Opus 4.7</b>")
+    {{hero_echo_html}}       — final hero echo (e.g. "Preview is <i>all</i> you need.")
+-->
+
+<div class="canvas-frame c-f11">
+  <div class="repo" data-anim="up" style="--d:.1s">
+    <b>{{repo_url}}</b> · {{repo_version}}
+  </div>
+
+  <div class="badges">
+    {{#each badges}}
+    <span class="b {{variant}}" data-anim="pop" style="--d:{{delay}}s">{{label}}</span>
+    {{/each}}
+  </div>
+
+  <div class="install tw"
+       data-typewriter="{{install_command}}"
+       data-tw-dur="{{install_duration_ms}}"
+       data-tw-delay="{{install_delay_ms}}"></div>
+
+  <div class="lockup" data-anim="bloom" style="--d:4.5s">
+    {{lockup_text}}<br>
+    <span class="lockup-echo">{{hero_echo_html}}</span>
+  </div>
+</div>

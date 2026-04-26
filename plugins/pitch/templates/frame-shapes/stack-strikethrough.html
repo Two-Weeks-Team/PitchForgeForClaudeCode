@@ -1,0 +1,28 @@
+<!--
+  Shape: stack-strikethrough
+  Used for: F2 (failure cascade)
+  Default duration: 10s
+  Default animation timeline:
+    0.15s — heading slide-up
+    1.0s — row 1 right-slide + strikethrough draw
+    2.0s — row 2 right-slide + strikethrough
+    3.0s — row 3 right-slide + strikethrough
+
+  Slot variables:
+    {{heading}} {{heading_accent}}        — main heading (e.g. "every. single. time.")
+    {{rows}}                              — array of {label, value}, length 3-5
+                                            label = the failure description
+                                            value = the marker (e.g. "v1 → v2 → v3", "100% pass")
+    {{accent_color_var}}                  — palette role (typically "failure" → red)
+-->
+
+<div class="canvas-frame c-f2">
+  <div class="h" data-anim="up" style="--d:.15s">{{heading_with_accent}}</div>
+  <div class="stack">
+    <!-- repeat for each row, with --d: 1.0s, 2.0s, 3.0s, ... -->
+    <div class="row" data-anim="right" style="--d:{{row_delay}}s">
+      <span>{{row_label}}</span>
+      <span class="v">{{row_value}}</span>
+    </div>
+  </div>
+</div>

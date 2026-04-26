@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  verify-plugin:
+    name: Verify plugin structure (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-14]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jsonschema
+      - name: Verify plugin structure
+        run: bash scripts/verify-plugin.sh
+
+  agent-inventory:
+    name: Agent inventory (13 target)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Count agents
+        run: |
+          count=$(find plugins/pitch/agents -name "*.md" -type f | wc -l)
+          echo "Found $count agents"
+          [[ "$count" -eq 13 ]] || { echo "Expected 13 agents (v0.1.0 target may be lower — adjust this gate as agents land)" ; exit 1; }
+
+  shell-lint:
+    name: Shell script lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: |
+          sudo apt-get update && sudo apt-get install -y shellcheck
+          find scripts -name "*.sh" -exec shellcheck {} +

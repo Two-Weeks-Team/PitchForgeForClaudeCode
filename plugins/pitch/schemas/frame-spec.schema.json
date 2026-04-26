@@ -1,0 +1,248 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://two-weeks-team.github.io/PitchForgeForClaudeCode/schemas/frame-spec.schema.json",
+  "title": "PitchForge Frame Spec",
+  "description": "Output of Phase P2 (scenario-architect). The single source of truth for every frame body, every timestamp, every animation timeline. The deck-assembler reads this and emits deck.html with no manual edits anywhere.",
+  "type": "object",
+  "required": [
+    "_schema_version",
+    "_brief_run_id",
+    "project_name",
+    "runtime_seconds",
+    "narrative_arc",
+    "color_palette",
+    "hero",
+    "frames"
+  ],
+  "properties": {
+    "_schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "_brief_run_id": {
+      "type": "string",
+      "description": "Hash or run id of the brief.json that produced this spec — used by /pitch:reorder + /pitch:replay."
+    },
+    "project_name": { "type": "string", "maxLength": 80 },
+    "subtitle": { "type": "string", "maxLength": 200 },
+    "runtime_seconds": { "type": "integer", "minimum": 30, "maximum": 600 },
+    "narrative_arc": {
+      "type": "string",
+      "enum": ["wow-first", "problem-first", "story", "teaser"]
+    },
+    "color_palette": {
+      "type": "string",
+      "description": "Name of a palette in templates/color-palettes/."
+    },
+    "tone_profile": {
+      "type": "string",
+      "enum": ["agro-drop-thrill", "calm-academic", "playful-warm", "corporate-clean"],
+      "default": "agro-drop-thrill"
+    },
+    "hero": {
+      "type": "object",
+      "required": ["copy", "pattern", "primary_frame", "echo_frame"],
+      "properties": {
+        "copy": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 100,
+          "description": "Verbatim hero line. Echoed at primary + outro. Never paraphrased."
+        },
+        "pattern": {
+          "type": "string",
+          "enum": ["paper-title-inversion", "stop-start", "first-reordering", "confession", "rule-of-three"]
+        },
+        "primary_frame": {
+          "type": "string",
+          "description": "Frame ID where the hero copy renders at full size (typically F4 wow beat).",
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "echo_frame": {
+          "type": "string",
+          "description": "Frame ID where the hero echoes at the outro (typically F11).",
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "split_words": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Pre-split words for the per-word reveal animation on the primary frame.",
+          "minItems": 1,
+          "maxItems": 12
+        },
+        "accent_word_index": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Index into split_words that renders in gold italic (the visual accent)."
+        }
+      }
+    },
+    "frames": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 30,
+      "items": { "$ref": "#/definitions/frame" }
+    },
+    "judging_criteria_coverage": {
+      "type": "array",
+      "description": "Which frames cover which judging axis (audited by judging-criteria-auditor for ≥ 2 frames per axis).",
+      "items": {
+        "type": "object",
+        "required": ["axis", "frame_ids"],
+        "properties": {
+          "axis": { "type": "string" },
+          "frame_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          }
+        }
+      }
+    },
+    "delivery_notes": {
+      "type": "object",
+      "description": "Free-form per-frame VO direction (delivery, tone, breath instructions).",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "delivery": { "type": "string" },
+          "tone": { "type": "string" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "frame": {
+      "type": "object",
+      "required": [
+        "frame_id",
+        "position",
+        "shape",
+        "time_start_seconds",
+        "duration_seconds",
+        "act",
+        "heading"
+      ],
+      "properties": {
+        "frame_id": {
+          "type": "string",
+          "description": "Stable id (F1 / F2 / cover / close / custom). Stays constant across reorders.",
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "maxLength": 24
+        },
+        "position": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "1-based slot number after reordering. SLIDE_DURATION array is built from these in order."
+        },
+        "shape": {
+          "type": "string",
+          "enum": [
+            "cover",
+            "close",
+            "chain",
+            "stack-strikethrough",
+            "counter-roll",
+            "gallery-hero",
+            "hierarchy-diagram",
+            "modal-live-json",
+            "triple-pane",
+            "terminal-browser",
+            "repo-install"
+          ],
+          "description": "Maps to templates/frame-shapes/<shape>.html. cover and close are deck-shell built-ins."
+        },
+        "time_start_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Absolute seconds from start. Recomputed by /pitch:reorder."
+        },
+        "duration_seconds": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 120
+        },
+        "act": {
+          "type": "string",
+          "enum": ["cover", "agro", "drop", "thrill", "outro", "close"],
+          "description": "Doumont act — drives the tone-editor's rewrite ruleset."
+        },
+        "heading": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "On-canvas heading. e.g. 'we don't know what we want.'"
+        },
+        "heading_accent_word": {
+          "type": "string",
+          "description": "Substring of heading rendered in palette accent color."
+        },
+        "meta_tag": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Small uppercase eyebrow above the script panel heading."
+        },
+        "script_h2": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "h2 in the script-wrap panel (the 'big serif' line)."
+        },
+        "voiceover": {
+          "type": "string",
+          "description": "VO line. May contain <b>...</b> for bold and <i>...</i> for italics — sanitized at render."
+        },
+        "delivery_note": {
+          "type": "string",
+          "description": "Stage direction for the recording presenter."
+        },
+        "tone_note": {
+          "type": "string",
+          "description": "Tonal hint (prosecutor opening / showman + invitation / etc.)."
+        },
+        "navbar_keys_label": {
+          "type": "string",
+          "description": "Override for the navbar key hint. e.g. '★ OPENING WOW · 10s hold'."
+        },
+        "show_echo_ribbon": {
+          "type": "boolean",
+          "default": true,
+          "description": "When true, the hero ribbon appears at the top of the slide. Hero + cover + close are typically false."
+        },
+        "shape_props": {
+          "type": "object",
+          "description": "Shape-specific slot values. Validated against the shape's own schema at render time.",
+          "additionalProperties": true
+        },
+        "animation_timeline": {
+          "type": "array",
+          "description": "Ordered list of animation events that drive data-anim attributes + JS engines.",
+          "items": { "$ref": "#/definitions/animationEvent" }
+        }
+      }
+    },
+    "animationEvent": {
+      "type": "object",
+      "required": ["selector", "kind"],
+      "properties": {
+        "selector": {
+          "type": "string",
+          "description": "CSS-like selector inside the frame — applied to the rendered slide."
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "fade", "up", "right", "pop", "spawn", "glow", "strike",
+            "reveal", "bloom", "land", "counter", "typewriter", "stagger-tiles",
+            "cursor-path", "browser-slide-in", "deploy-click"
+          ]
+        },
+        "delay_seconds": { "type": "number", "minimum": 0, "default": 0 },
+        "duration_seconds": { "type": "number", "minimum": 0 },
+        "options": {
+          "type": "object",
+          "description": "Engine-specific options (counter target/dur/stops, typewriter text/duration, etc.).",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

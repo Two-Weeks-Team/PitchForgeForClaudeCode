@@ -1,0 +1,36 @@
+<!--
+  Shape: chain
+  Used for: F1 (problem) and F3 (pivot)
+  Default duration: 7-10s
+  Default animation timeline:
+    0.15s — heading slide-up
+    1.0s — first block pop
+    1.35s — first arrow fade
+    1.6s — second block pop
+    1.95s — second arrow fade
+    2.2s — third block pop
+    2.55s — third arrow fade
+    2.8s — terminal block (`?` for problem variant; bloom for pivot variant)
+
+  Slot variables:
+    {{heading}}                  — main heading text (e.g. "we don't know what we want.")
+    {{heading_accent}}           — substring rendered in accent color (e.g. "want.")
+    {{block_1}} {{block_2}} {{block_3}}  — three sequential blocks
+    {{terminal}}                 — final block (typically "?" or "26 results")
+    {{terminal_anim}}            — "pulse" (problem) or "bloom" (pivot); deck-shell maps to CSS keyframes
+    {{variant}}                  — "problem" → c-f1 class, "pivot" → c-f3 class
+    {{accent_color_var}}         — palette token name (default "gold" for problem, "green" for pivot)
+-->
+
+<div class="canvas-frame c-{{variant}}">
+  <div class="h" data-anim="up" style="--d:.15s">{{heading_with_accent}}</div>
+  <div class="arrow">
+    <div class="blk" data-anim="pop" style="--d:1.0s">{{block_1}}</div>
+    <div class="arr" data-anim="fade" style="--d:1.35s">→</div>
+    <div class="blk" data-anim="pop" style="--d:1.6s">{{block_2}}</div>
+    <div class="arr" data-anim="fade" style="--d:1.95s">→</div>
+    <div class="blk" data-anim="pop" style="--d:2.2s">{{block_3}}</div>
+    <div class="arr" data-anim="fade" style="--d:2.55s">→</div>
+    <div class="blk {{terminal_class}}" data-anim="{{terminal_anim}}" style="--d:2.8s">{{terminal}}</div>
+  </div>
+</div>

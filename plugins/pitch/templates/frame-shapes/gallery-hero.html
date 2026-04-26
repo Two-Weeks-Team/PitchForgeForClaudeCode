@@ -1,0 +1,43 @@
+<!--
+  Shape: gallery-hero
+  Used for: F4 (wow reveal) and F8 (interactive selection variant)
+  Default duration: 10-30s (10s for the wow opener; 30s for click variant with extended hold)
+  Default animation timeline:
+    0.05s+ — tile stagger spawn (30 tiles, 30ms apart, JS engine via staggerTiles())
+    1.0s   — backdrop bloom (radial darkening)
+    1.5s   — hero per-word reveal starts (5-9 words, 0.12s stagger via --n + --w-d)
+    3.4s   — echo-mini fade in
+    4.0s   — vo-overlay slide-up (hidden in cinematic mode)
+
+  Slot variables:
+    {{tile_count}}           — number of tiles in the grid (default 30)
+    {{tile_palette}}          — array of OKLCH lightness/chroma/hue tuples (deck-shell renders default 30)
+    {{hero_words}}           — array of {text, accent_index, n}; accent word is wrapped in <i>
+    {{hero_word_stagger_s}}  — per-word delay in seconds (default 0.12; L3: drop to 0.08 if duration < 8s)
+    {{echo_mini_text}}       — small caps line under the hero (e.g. "PreviewDD · 3-DD methodology")
+    {{vo_overlay_text}}      — VO subtitle inside the canvas (HTML allowed: <b>, <i>)
+
+  Variant: gallery-hero-interactive (F8)
+    - Set {{interactive}} = true
+    - Slot {{cursor_target_top_pct}}, {{cursor_target_left_pct}}
+    - Adds .cursor and .ripple elements (CSS keyframe aCursorPath drives motion)
+-->
+
+<div class="hero-canvas-full">
+  <div class="grid">
+    <!-- tile stack — 30 default tiles. The deck-shell ships these inline; if {{tile_count}} > 0,
+         the assembler replicates with hue-rotated gradients. -->
+    {{tiles}}
+  </div>
+
+  <!-- Optional cursor + ripple for the F8 interactive variant -->
+  {{#if interactive}}
+  <div class="ripple" style="top:{{cursor_target_top_pct}}%;left:{{cursor_target_left_pct}}%"></div>
+  <div class="cursor" style="top:{{cursor_target_top_pct}}%;left:{{cursor_target_left_pct}}%"></div>
+  {{/if}}
+
+  <!-- Hero overlay -->
+  <div class="lab"><span class="hero-letters">{{hero_words_html}}</span></div>
+  <div class="echo-mini" data-anim="fade" style="--d:3.4s">{{echo_mini_text}}</div>
+  <div class="vo-overlay" data-anim="up" style="--d:4.0s">{{vo_overlay_text}}</div>
+</div>

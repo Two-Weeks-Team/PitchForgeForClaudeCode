@@ -1,0 +1,18 @@
+PitchForge for Claude Code
+Copyright 2026 Two-Weeks-Team
+
+This product includes software developed by the Two-Weeks-Team.
+
+Built with Claude Opus 4.7 (Anthropic).
+
+Sibling product to Preview Forge for Claude Code
+(https://github.com/Two-Weeks-Team/PreviewForgeForClaudeCode).
+
+The reference example `plugins/pitch/examples/preview-forge-160s/deck.html`
+is a verbatim copy of the v2 cinematic storyboard deck originally produced
+in the Preview Forge repository's `claudedocs/winning-storyboard-deck-v2.html`
+during the design conversation that produced this plugin's specification.
+
+The hero-copy methodology in this plugin acknowledges the cadence of
+"Attention Is All You Need" (Vaswani et al., 2017, NeurIPS) as a positioning
+pattern. The reference is structural; no content from the paper is reproduced.

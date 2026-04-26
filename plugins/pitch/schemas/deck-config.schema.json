@@ -1,0 +1,195 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://two-weeks-team.github.io/PitchForgeForClaudeCode/schemas/deck-config.schema.json",
+  "title": "PitchForge Deck Config",
+  "description": "Render-time configuration consumed by deck-assembler when splicing frame-spec.json into templates/deck-shell.html. This file is what the assembler binds the {{slot}} placeholders against.",
+  "type": "object",
+  "required": [
+    "_schema_version",
+    "_frame_spec_run_id",
+    "title",
+    "subtitle",
+    "id_label",
+    "palette",
+    "slide_duration_seconds",
+    "summaries",
+    "hero",
+    "cover",
+    "close",
+    "ranges"
+  ],
+  "properties": {
+    "_schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "_frame_spec_run_id": {
+      "type": "string",
+      "description": "Hash or run id of the frame-spec.json that was assembled."
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 120,
+      "description": "Browser title element + cover-title."
+    },
+    "subtitle": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Cover subtitle line. e.g. 'a Claude Code plugin · 144 Opus 4.7 personas · two human clicks'."
+    },
+    "id_label": {
+      "type": "string",
+      "maxLength": 60,
+      "description": "All-caps tracker that lives in the topbar throughout the deck."
+    },
+    "version_label": {
+      "type": "string",
+      "maxLength": 24,
+      "description": "Render in the cover footer — typically the project version."
+    },
+    "tagline": {
+      "type": "string",
+      "maxLength": 120,
+      "description": "Cover tag line under the hero. e.g. 'PREVIEWDD · 3-DD METHODOLOGY · v1.14.1'."
+    },
+    "palette": {
+      "type": "object",
+      "required": ["name", "tokens"],
+      "properties": {
+        "name": { "type": "string" },
+        "tokens": {
+          "type": "object",
+          "description": "OKLCH variables substituted into the deck-shell :root block.",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "slide_duration_seconds": {
+      "type": "array",
+      "description": "Position-ordered seconds. Drives JS SLIDE_DURATION array + auto-advance + range labels.",
+      "items": {
+        "type": "number",
+        "minimum": 1,
+        "maximum": 120
+      }
+    },
+    "summaries": {
+      "type": "array",
+      "description": "Position-ordered [title, line] pairs used to render the overview tile grid (esc menu).",
+      "items": {
+        "type": "array",
+        "items": { "type": "string" },
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "progress_widths_pct": {
+      "type": "array",
+      "description": "Position-ordered progress-bar percentage fills. Optional; auto-computed from slide_duration_seconds if absent.",
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 100
+      }
+    },
+    "hero": {
+      "type": "object",
+      "required": ["copy", "split_words", "accent_word_index", "primary_position", "echo_position"],
+      "properties": {
+        "copy": { "type": "string", "minLength": 5, "maxLength": 100 },
+        "split_words": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "maxItems": 12
+        },
+        "accent_word_index": { "type": "integer", "minimum": 0 },
+        "primary_position": { "type": "integer", "minimum": 1 },
+        "echo_position": { "type": "integer", "minimum": 1 },
+        "echo_ribbon_text": {
+          "type": "string",
+          "description": "How the hero is echoed in the small ribbon at the top of every non-hero slide. Allows minor formatting variation."
+        }
+      }
+    },
+    "cover": {
+      "type": "object",
+      "required": ["eyebrow", "hero_inline", "meta"],
+      "properties": {
+        "eyebrow": { "type": "string", "maxLength": 100 },
+        "hero_inline": {
+          "type": "string",
+          "description": "The hero copy with HTML markup (italic accent allowed)."
+        },
+        "cta": { "type": "string", "default": "→ press → to begin" },
+        "meta": {
+          "type": "array",
+          "description": "Cover meta chips. Each entry is { value, label }.",
+          "items": {
+            "type": "object",
+            "required": ["value", "label"],
+            "properties": {
+              "value": { "type": "string" },
+              "label": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "close": {
+      "type": "object",
+      "required": ["headline", "stat_line", "checks", "call", "repo_line"],
+      "properties": {
+        "headline": { "type": "string" },
+        "stat_line": { "type": "string" },
+        "checks": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "call": { "type": "string" },
+        "repo_line": { "type": "string" }
+      }
+    },
+    "ranges": {
+      "type": "object",
+      "required": ["opening", "full"],
+      "properties": {
+        "opening": { "$ref": "#/definitions/playRange" },
+        "full": { "$ref": "#/definitions/playRange" },
+        "custom": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/playRange" }
+        }
+      }
+    },
+    "rec_timer_total_frames": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Frame count rendered in the floating rec-timer div. Defaults to slide count."
+    }
+  },
+  "definitions": {
+    "playRange": {
+      "type": "object",
+      "required": ["start_position", "end_position", "label", "key"],
+      "properties": {
+        "start_position": { "type": "integer", "minimum": 1 },
+        "end_position": { "type": "integer", "minimum": 1 },
+        "label": {
+          "type": "string",
+          "description": "User-visible label. e.g. 'opening · F4 → F3 · 35s'."
+        },
+        "button_label": {
+          "type": "string",
+          "description": "Optional label for the control panel button. e.g. '▶ Opening · F4→F3 (35s)'."
+        },
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1,
+          "description": "Single keyboard key (lowercase) that triggers this range."
+        }
+      }
+    }
+  }
+}
