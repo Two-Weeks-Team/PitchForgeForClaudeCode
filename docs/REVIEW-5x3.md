@@ -6,8 +6,28 @@ total review passes. Findings cluster into issues; clusters of related
 issues become single PRs.
 
 This file is the **template + worksheet**. The actual review for the
-v1.0 release is run in a fresh Claude Code session with this file as
-the working surface; each row gets filled in.
+v1.0 release is run in a fresh Claude Code session (or via the Decision
+Panel skill) with this file as the working surface; each row gets filled
+in.
+
+## When to run (deferred)
+
+**Decision: defer the audit until immediately before public transition
+or marketplace registration PR is queued.** Recorded
+2026-04-27 by 10-expert Decision Panel (7/10 chose A_STACK as the
+domain model; ROI Analyst + Pragmatist's dissent on timing was
+adopted — running 5×3 now, with external users = 0 and 92/92 automated
+suites green, has marginal yield over what the hooks already catch).
+
+Trigger conditions to actually run the audit:
+
+- Public visibility transition queued (`gh repo edit ... --visibility public`)
+- Or marketplace registration PR ready to submit
+- Or first external user reports a non-trivial issue
+- Or v1.x release where any domain has accumulated > 5 unverified findings
+
+Until any of those fires, this worksheet stays empty and the project
+continues feature work.
 
 ## How to run
 
@@ -21,13 +41,27 @@ the working surface; each row gets filled in.
 
 ## The five domains
 
+Domain model: **A_STACK** (Stack 5-layer) — adopted by Decision Panel
+2026-04-27 (7/10 majority). Each domain owns a layer of the artifact
+stack; layers do not overlap.
+
 | # | Domain | What it checks |
 |---|---|---|
-| **D1** | **Methodology + arc design** | Are the 8 methodology docs consistent with each other and with the templates? Do the arcs honor the act mapping? |
-| **D2** | **Generator + templates** | Does `scripts/generate-deck.py` faithfully render every shape × every palette? Are the template slot contracts complete? |
+| **D1** | **Methodology + arc design** | Are the 8 methodology docs consistent with each other and with the templates? Do the arcs honor the act mapping? **D1 owns `schemas/*.json` (the contracts).** |
+| **D2** | **Generator + templates** | Does `scripts/generate-deck.py` faithfully render every shape × every palette? Are the template slot contracts complete? **D2 is the *consumer* of D1's schemas, never the owner.** |
 | **D3** | **Animation + recording** | Do the deck's animation engines (CSS + JS) cover every reference effect? Does cinematic mode hide everything per L1/L2/L5? |
-| **D4** | **Hooks + audits** | Do the three Layer-0 hooks (`cmd-modifier-guard`, `stale-count-detector`, `tone-ai-detector`) catch the failures they claim? Is `verify-plugin.sh` complete? |
-| **D5** | **Documentation + accessibility** | README, CONTRIBUTING, SECURITY, methodology docs — are they self-consistent? Are non-English audiences served by visual subtitles? Is the deck-cinematic.html fully keyboard-navigable? |
+| **D4** | **Hooks + audits** | **Charter (locked):** Layer-0 enforcement (cmd-modifier-guard, stale-count-detector, tone-ai-detector) **+** modifier-key safety verification across generated decks **+** `.env`/`.gitignore` policy enforcement (no secrets committable) **+** `verify-plugin.sh` coverage of all on-disk artifact counts. Charter is locked because D4 is the only domain that must catch its own evasion. |
+| **D5** | **Documentation + accessibility** | README, CONTRIBUTING, SECURITY, methodology cross-references — self-consistent? OKLCH text/bg contrast ≥ 4.5:1 across all 3 palettes? Keyboard-only navigation in `deck-cinematic.html` complete? Browser compatibility claim (Safari 17+ / Chrome 113+ / Firefox 113+) honored or surfaced as warning? |
+
+### Cross-domain ownership rules (mitigation #1)
+
+To prevent double-counting and blind spots at domain seams:
+
+- `schemas/*.json` → **D1 owns** (definitions). D2 consumes; D2 findings on schema violations are *escalated to D1*, not duplicated.
+- `frame-spec.json` (runtime artifact) → **D2 owns** (it is generator output). D1 owns the schema that validates it.
+- `deck-shell.html` palette tokens → **D2 owns** (substitution). D3 owns the runtime CSS keyframes the tokens flow into.
+- Layer-0 hooks → **D4 owns**. D2 calls hooks but does not audit them.
+- README count claims → **D5 owns** (documentation). D4 enforces the constraint via stale-count-detector but D5 owns the prose.
 
 ## The three roles
 
@@ -36,6 +70,24 @@ the working surface; each row gets filled in.
 | **Lead** | Lead engineer for the domain. Default-positive but rigorous. Signs off on the domain's design choices. |
 | **Domain expert** | A hypothetical specialist (typographer for D5, accessibility expert for D5, animation lead for D3, etc.). Verifies the domain matches industry expectations. |
 | **Red hat** | De Bono's red hat, applied adversarially. Looks for the failure mode that ships. Skeptical, hostile to assumptions. Blocks if anything smells. |
+
+### Red-hat forced question (mitigation #2)
+
+The Decision Panel flagged a specific failure mode: A_STACK runs the
+risk of becoming a "self-congratulatory rubber-stamp" where Red-hat
+findings duplicate what Layer-0 hooks already catch. To prevent this,
+**every Red-hat cell must answer this question explicitly before
+recording any finding**:
+
+> *"What does this layer expose that the automated hooks
+> (cmd-modifier-guard / stale-count-detector / tone-ai-detector /
+> verify-plugin) and the four acceptance suites do **NOT** already
+> verify?"*
+
+If the Red-hat cannot identify a non-overlapping concern, the cell
+records "no non-redundant finding — automation covers this layer" and
+moves on. This is not a failure; it is honest signal that the layer is
+adequately self-policed.
 
 ## The 15 cells
 
@@ -124,7 +176,46 @@ The release commits one PR per cluster. After every PR:
 
 Release is blocked until all four are green and every cell is filled.
 
+## Domain split triggers (mitigation #4)
+
+Each domain's scope was sized for v1.0. Two domains are flagged for
+likely growth:
+
+- **D3 (Animation + Recording)** — if any single audit run accumulates
+  > 5 unverified findings in this domain, **split into D3a Animation /
+  D3b Recording** for the next release. Trigger expected around v1.3
+  per the Operator persona's pre-mortem.
+- **D5 (Docs + A11y)** — if Domain-expert role-play feels heterogeneous
+  ("typographer for docs, a11y expert for keyboard-nav cannot share a
+  single persona"), **split into D5a Docs / D5b A11y** and merge
+  **D4 Hooks** into **D2 Generator** to preserve the 5-domain count.
+  Trigger noted by Domain Expert persona in v1.0 panel.
+
+Splits are *prepared* now, *applied* on demand. The 5-domain budget is
+the constant; which domains fill it can rotate.
+
+## Decision Panel trace (origin of this worksheet)
+
+| Date | Decision | Source |
+|---|---|---|
+| 2026-04-27 | Adopt Stack 5-layer (A_STACK) as the domain model | Decision Panel 7/10 majority — Strategist, Critical Reviewer, Risk Engineer, Domain Expert, Operator, Security Auditor, Pragmatist voted A_STACK |
+| 2026-04-27 | Defer first audit run to immediately before public/marketplace transition | ROI Analyst + Pragmatist dissent (timing); user approval via /decision-panel + AskUserQuestion |
+| 2026-04-27 | Add 4 mitigations (schema ownership rule, Red-hat forced question, D4 charter lock, split triggers) | Cross-cutting findings from 7 panelists; user approval to inline |
+
+Dissenting voices preserved (must consult before any future audit run):
+
+- **Devil's Advocate**: voted D_RISK; concern: "A_STACK becomes a
+  self-congratulatory ritual that duplicates hook coverage."
+  → addressed by mitigation #2 (Red-hat forced question).
+- **ROI Analyst**: voted D_RISK; concern: "Marginal yield over
+  92/92 automation while external users = 0."
+  → addressed by deferring the run (When-to-run section).
+- **Innovator**: voted OTHER (G_RECURSIVE); proposal: "PitchForge
+  generates its own audit deck — dogfooding."
+  → parked for v1.1+ trial; not blocking the v1.0 audit.
+
 ## Cross-references
 
 - `docs/PROPOSAL.md` § ⑦ "5×3 team audit" — the practice description.
 - Preview Forge's audit log (sibling project) for prior precedent.
+- Decision Panel skill — `~/.claude/skills/decision-panel/`
