@@ -19,7 +19,7 @@ that turns project context into a 60–300 second cinematic, recording-ready
 demo deck through a 7-phase pipeline.
 
 Working directory:
-  /Users/kimsejun/Documents/GitHub/PitchForgeForClaudeCode
+  /Users/<you>/Documents/GitHub/PitchForgeForClaudeCode
 
 Read these files in order before doing anything else:
 
@@ -32,7 +32,8 @@ Then run:
 
   bash scripts/verify-plugin.sh
 
-This must currently pass 18/18. Confirm before continuing.
+This must currently pass at the documented baseline (verify-plugin.sh
+prints "All verification checks passed."). Confirm before continuing.
 
 Your milestone is v0.1.0 — minimum runnable pipeline (Tier 1 Auto). The
 ordered task list is in docs/HANDOFF.md § "What's next". Work through it
@@ -80,7 +81,7 @@ then begin v0.1.0 task #1 (the three remaining schemas).
 If the user wants a shorter prompt:
 
 ```
-PitchForge v0.1.0. Working dir: /Users/kimsejun/Documents/GitHub/PitchForgeForClaudeCode. Read docs/HANDOFF.md, run verify-plugin.sh, then start the v0.1.0 task list.
+PitchForge v0.1.0. Working dir: /Users/<you>/Documents/GitHub/PitchForgeForClaudeCode. Read docs/HANDOFF.md, run verify-plugin.sh, then start the v0.1.0 task list.
 ```
 
 The full prompt is preferred — it loads the design intent up front and avoids
