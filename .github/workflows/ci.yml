@@ -46,4 +46,25 @@ jobs:
       - name: shellcheck
         run: |
           sudo apt-get update && sudo apt-get install -y shellcheck
-          find scripts -name "*.sh" -exec shellcheck {} +
+          # --severity=warning ignores SC2015 (A && B || C info) which is a
+          # false positive here: ok/bad helper functions always return 0,
+          # so C does not run when B is "true".
+          find scripts tests/e2e -name "*.sh" -exec shellcheck --severity=warning {} +
+
+  acceptance:
+    name: Acceptance suites (Tier 1 + variety + standalone + recursive + recording-kit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run acceptance suites
+        run: |
+          bash scripts/verify-plugin.sh
+          bash tests/e2e/regenerate-reference-deck.sh
+          bash tests/e2e/v0.5-variety.sh
+          bash tests/e2e/v0.5-standalone.sh
+          bash tests/e2e/v1.0-recursive.sh
+          bash tests/e2e/v1.0-recording-kit.sh
