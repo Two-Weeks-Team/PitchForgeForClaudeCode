@@ -62,13 +62,19 @@ ls "$EXPORTS_DIR"/*-cinematic.html >/dev/null 2>&1 \
   && ok "html export written" \
   || bad "html export missing"
 
-python3 scripts/export-deck.py --run "$GEN_DIR/" --format bundle --out "$EXPORTS_DIR/" >/dev/null
+echo "  (debug) GEN_DIR contents before bundle:"
+ls -la "$GEN_DIR/" 2>&1 | sed 's/^/    /' | head -15
+python3 scripts/export-deck.py --run "$GEN_DIR/" --format bundle --out "$EXPORTS_DIR/" 2>&1 | sed 's/^/  (export) /'
 ls "$EXPORTS_DIR"/*.bundle.tar.gz >/dev/null 2>&1 \
   && ok "bundle.tar.gz export written" \
   || bad "bundle export missing"
 
 # Bundle should contain the key files
 bundle=$(ls "$EXPORTS_DIR"/*.bundle.tar.gz | head -1)
+echo "  (debug) bundle path: $bundle"
+echo "  (debug) bundle size: $(wc -c < "$bundle") bytes"
+echo "  (debug) bundle listing:"
+tar -tzf "$bundle" 2>&1 | sed 's/^/    /' | head -20
 for member in brief.json frame-spec.json deck-cinematic.html recording-config.json; do
   if tar -tzf "$bundle" 2>/dev/null | grep -qF "$member"; then
     ok "bundle contains $member"
