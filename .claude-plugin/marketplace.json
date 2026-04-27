@@ -7,14 +7,14 @@
   },
   "metadata": {
     "description": "Two-Weeks-Team marketplace hosting the PitchForge plugin — one Socratic interview turns a project into a 60-300s cinematic, recording-ready demo deck via 7-phase pipeline. Sibling to Preview Forge.",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "homepage": "https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode"
   },
   "plugins": [
     {
       "name": "pitch",
       "description": "PitchForge — one Socratic interview → 7-phase workflow (Brief / Scenario / Storyboard / Tone / Deck / Animate / Record) → single self-contained HTML deck that doubles as the recording source. 13 agents, 15 /pitch:* commands, 9 frame shapes, 5 narrative arcs, 3 OKLCH palettes, 3 Layer-0 hooks. Built with Opus 4.7.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "Two-Weeks-Team"
       },

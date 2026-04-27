@@ -5,6 +5,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 SemVer is auto-bumped via [release-please](https://github.com/googleapis/release-please)
 from Conventional Commit messages.
 
+## [0.2.0](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/compare/v0.1.0...v0.2.0) (2026-04-27)
+
+
+### Features
+
+* **ci:** release-please CD pipeline (mirrors Preview Forge) ([c0154cd](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/commit/c0154cdc17f397a936c68733b352f06ac953c94a))
+* **v0.5:** wire /pitch:hero, /pitch:reorder, /pitch:tone runtime ([ac9cc32](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/commit/ac9cc329c085fb8aeb93c9170593485a29ac56cc))
+* v1.0.0 candidate — PitchForge plugin (initial commit) ([75ce32d](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/commit/75ce32debdeb1572ece18e15da086fe2617588da))
+* **v1.0:** recording kit + playbook for video team handoff ([76fe6ba](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/commit/76fe6ba8a7a82a6f33c9179fbac37ecdfd2bc3eb))
+
 ## [Unreleased] — v1.0.0 candidate (recursive proof + multi-format export)
 
 ### Added — v1.0
