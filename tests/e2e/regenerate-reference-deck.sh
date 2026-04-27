@@ -66,7 +66,6 @@ GEN_SLIDES=$(grep -c '<section class="slide' "$GEN_DIR/deck-cinematic.html" || t
 [[ "$REF_SLIDES" -eq "$GEN_SLIDES" ]] && ok "slide count: $GEN_SLIDES (reference $REF_SLIDES)" \
                                      || bad "slide count drift: gen=$GEN_SLIDES vs ref=$REF_SLIDES"
 
-REF_KEYDOWN=$(grep -c "case 'r': case 'R'" "$REFERENCE" || true)
 GEN_KEYDOWN=$(grep -c "case 'r': case 'R'" "$GEN_DIR/deck-cinematic.html" || true)
 [[ "$GEN_KEYDOWN" -ge 1 ]] && ok "R/A/P keymap wired" || bad "R/A/P keymap missing"
 

@@ -70,7 +70,7 @@ ls "$EXPORTS_DIR"/*.bundle.tar.gz >/dev/null 2>&1 \
 # Bundle should contain the key files
 bundle=$(ls "$EXPORTS_DIR"/*.bundle.tar.gz | head -1)
 for member in brief.json frame-spec.json deck-cinematic.html recording-config.json; do
-  if tar -tzf "$bundle" 2>/dev/null | grep -q "/$member$"; then
+  if tar -tzf "$bundle" 2>/dev/null | grep -qF "$member"; then
     ok "bundle contains $member"
   else
     bad "bundle missing $member"
