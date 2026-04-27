@@ -1,0 +1,40 @@
+name: Release Please (CD)
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    name: Draft release PR (conventional commits → version bump)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      # Manifest mode so .release-please-config.json's extra-files (with
+      # jsonpath) rewrite plugin.json + marketplace.json in lockstep with
+      # the tag. Mirrors Preview Forge's CD pipeline.
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          manifest-file: .release-please-manifest.json
+          config-file: .release-please-config.json
+
+      - name: Show release-please output
+        if: always()
+        env:
+          RP_RELEASE_CREATED: ${{ steps.release.outputs.release_created }}
+          RP_TAG_NAME: ${{ steps.release.outputs.tag_name }}
+          RP_PR_NUMBER: ${{ steps.release.outputs.pr }}
+        run: |
+          echo "release_created: $RP_RELEASE_CREATED"
+          echo "tag_name:        $RP_TAG_NAME"
+          if [[ -n "$RP_PR_NUMBER" ]]; then
+            echo "release PR: opened (see 'Pull requests' tab)"
+          else
+            echo "release PR: none"
+          fi
