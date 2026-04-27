@@ -1,37 +1,29 @@
 {
-  "$schema": "https://code.claude.com/schemas/plugin.json",
   "name": "pitch",
+  "description": "PitchForge — one Socratic interview → 7-phase workflow (Brief / Scenario / Storyboard / Tone / Deck / Animate / Record) → single self-contained HTML deck that doubles as the recording source. Browser-native, OBS-ready, paper-grade hero copy, human-presenter delivery. Built with Opus 4.7.",
   "version": "0.1.0",
-  "displayName": "PitchForge",
-  "description": "One Socratic interview → 7-phase workflow → cinematic, recording-ready demo deck.",
-  "author": "Two-Weeks-Team",
-  "license": "Apache-2.0",
+  "author": {
+    "name": "Two-Weeks-Team",
+    "email": "app.2weeks@gmail.com",
+    "url": "https://github.com/Two-Weeks-Team"
+  },
   "homepage": "https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode.git"
-  },
-  "engines": {
-    "claudeCode": ">=2.0.0"
-  },
-  "model": {
-    "primary": "claude-opus-4-7",
-    "fallback": "claude-sonnet-4-6"
-  },
-  "components": {
-    "agents": "agents",
-    "commands": "commands",
-    "skills": "skills",
-    "hooks": "hooks",
-    "schemas": "schemas",
-    "memory": "memory"
-  },
-  "tags": [
+  "repository": "https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode",
+  "license": "Apache-2.0",
+  "keywords": [
+    "opus-4-7",
     "demo-video",
     "pitch-deck",
     "storyboard",
     "cinematic",
     "recording-ready",
+    "hero-copy",
+    "doumont-staccato",
+    "obs",
+    "mediarecorder",
+    "oklch",
+    "self-contained",
+    "single-html",
     "hackathon",
     "keynote"
   ]

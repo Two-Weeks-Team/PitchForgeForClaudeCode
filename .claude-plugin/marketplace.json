@@ -1,33 +1,39 @@
 {
-  "$schema": "https://code.claude.com/schemas/marketplace.json",
   "name": "two-weeks-team",
-  "displayName": "Two-Weeks-Team Marketplace",
-  "description": "Sibling forges from Two-Weeks-Team. Use Preview Forge to build the app, PitchForge to film it.",
-  "homepage": "https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode",
   "owner": {
     "name": "Two-Weeks-Team",
+    "email": "app.2weeks@gmail.com",
     "url": "https://github.com/Two-Weeks-Team"
+  },
+  "metadata": {
+    "description": "Two-Weeks-Team marketplace hosting the PitchForge plugin — one Socratic interview turns a project into a 60-300s cinematic, recording-ready demo deck via 7-phase pipeline. Sibling to Preview Forge.",
+    "version": "0.1.0",
+    "homepage": "https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode"
   },
   "plugins": [
     {
       "name": "pitch",
+      "description": "PitchForge — one Socratic interview → 7-phase workflow (Brief / Scenario / Storyboard / Tone / Deck / Animate / Record) → single self-contained HTML deck that doubles as the recording source. 13 agents, 15 /pitch:* commands, 9 frame shapes, 5 narrative arcs, 3 OKLCH palettes, 3 Layer-0 hooks. Built with Opus 4.7.",
       "version": "0.1.0",
-      "displayName": "PitchForge",
-      "description": "One Socratic interview → 7-phase workflow → cinematic, recording-ready demo deck. Browser-native, OBS-ready, paper-grade hero copy, human-presenter delivery.",
+      "author": {
+        "name": "Two-Weeks-Team"
+      },
       "source": "./plugins/pitch",
-      "tags": [
-        "claude-code-plugin",
+      "keywords": [
+        "opus-4-7",
         "demo-video",
         "pitch-deck",
         "storyboard",
         "cinematic",
         "recording-ready",
+        "hero-copy",
+        "obs",
+        "mediarecorder",
+        "oklch",
+        "self-contained",
         "hackathon",
-        "keynote",
-        "two-weeks-team"
-      ],
-      "license": "Apache-2.0",
-      "author": "Two-Weeks-Team"
+        "keynote"
+      ]
     }
   ]
 }

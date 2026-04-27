@@ -56,9 +56,6 @@ ships an entire methodology around finding *your* version of this line.
 
 ## Quick install
 
-> ⚠️ **v0.1.0 is in active development.** Install instructions below will
-> work after the first marketplace publish.
-
 ```bash
 # 1. Add this marketplace
 /plugin marketplace add Two-Weeks-Team/PitchForgeForClaudeCode
@@ -66,15 +63,33 @@ ships an entire methodology around finding *your* version of this line.
 # 2. Install the plugin
 /plugin install pitch@two-weeks-team
 
-# 3. Reload
+# 3. Reload so hooks, agents, and commands refresh
 /reload-plugins
 
 # 4. First-time setup (per workspace)
 /pitch:bootstrap
 
-# 5. Run
+# 5. Run the full 7-phase pipeline
 /pitch:new "your project in one line"
 ```
+
+### Update / pin a version
+
+```bash
+# Update to the latest published version
+/plugin update pitch@two-weeks-team
+
+#   — or, if update is not available in your Claude Code version —
+/plugin uninstall pitch@two-weeks-team
+/plugin install pitch@two-weeks-team
+/reload-plugins
+
+# Pin a specific past version (any tag from GitHub Releases)
+/plugin uninstall pitch@two-weeks-team
+/plugin install pitch@two-weeks-team@0.1.0
+```
+
+Every release is signed via [GitHub Releases](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/releases).
 
 After step 5, three to four files land in `runs/<id>/`:
 
