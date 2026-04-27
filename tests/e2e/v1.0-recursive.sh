@@ -62,21 +62,20 @@ ls "$EXPORTS_DIR"/*-cinematic.html >/dev/null 2>&1 \
   && ok "html export written" \
   || bad "html export missing"
 
-echo "  (debug) GEN_DIR contents before bundle:"
-ls -la "$GEN_DIR/" 2>&1 | sed 's/^/    /' | head -15
-python3 scripts/export-deck.py --run "$GEN_DIR/" --format bundle --out "$EXPORTS_DIR/" 2>&1 | sed 's/^/  (export) /'
+python3 scripts/export-deck.py --run "$GEN_DIR/" --format bundle --out "$EXPORTS_DIR/" >/dev/null
 ls "$EXPORTS_DIR"/*.bundle.tar.gz >/dev/null 2>&1 \
   && ok "bundle.tar.gz export written" \
   || bad "bundle export missing"
 
-# Bundle should contain the key files
+# Bundle should contain the key files. Use an extraction-based check
+# (more portable than tar -tzf grep across BSD/GNU tar variants).
 bundle=$(ls "$EXPORTS_DIR"/*.bundle.tar.gz | head -1)
-echo "  (debug) bundle path: $bundle"
-echo "  (debug) bundle size: $(wc -c < "$bundle") bytes"
-echo "  (debug) bundle listing:"
-tar -tzf "$bundle" 2>&1 | sed 's/^/    /' | head -20
+extract_dir="$EXPORTS_DIR/.bundle-check"
+mkdir -p "$extract_dir"
+tar -xzf "$bundle" -C "$extract_dir"
 for member in brief.json frame-spec.json deck-cinematic.html recording-config.json; do
-  if tar -tzf "$bundle" 2>/dev/null | grep -qF "$member"; then
+  # find under the extracted root regardless of slugged dir name
+  if find "$extract_dir" -name "$member" -type f | grep -q .; then
     ok "bundle contains $member"
   else
     bad "bundle missing $member"
