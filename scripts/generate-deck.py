@@ -795,7 +795,7 @@ def render_repo_install_frame(deck_config: dict, hero_echo_html: str) -> str:
         f'<span class="b {variant}" data-anim="pop" style="--d:{d}s">{label}</span>'
         for label, variant, d in badges
     )
-    install = "$ /plugin marketplace add Two-Weeks-Team/PitchForgeForClaudeCode\\n$ /plugin install pitch@two-weeks-team"
+    install = "$ /plugin marketplace add Two-Weeks-Team/PitchForgeForClaudeCode\\n$ /plugin install pitch@pitchforge"
     return f'''
         <div class="canvas-frame c-f11">
           <div class="repo" data-anim="up" style="--d:.1s"><b>{repo}</b> · {deck_config.get("version_label", "v0.1.0")}</div>

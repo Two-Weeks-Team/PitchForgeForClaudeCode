@@ -1,12 +1,12 @@
 {
-  "name": "two-weeks-team",
+  "name": "pitchforge",
   "owner": {
     "name": "Two-Weeks-Team",
     "email": "app.2weeks@gmail.com",
     "url": "https://github.com/Two-Weeks-Team"
   },
   "metadata": {
-    "description": "Two-Weeks-Team marketplace hosting the PitchForge plugin — one Socratic interview turns a project into a 60-300s cinematic, recording-ready demo deck via 7-phase pipeline. Sibling to Preview Forge.",
+    "description": "PitchForge marketplace — one Socratic interview turns a project into a 60-300s cinematic, recording-ready demo deck via 7-phase pipeline. Sibling to Preview Forge (which has its own marketplace named 'two-weeks-team' — keep them separate to avoid name collision).",
     "version": "0.2.1",
     "homepage": "https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode"
   },

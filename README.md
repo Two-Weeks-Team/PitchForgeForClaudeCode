@@ -61,7 +61,7 @@ ships an entire methodology around finding *your* version of this line.
 /plugin marketplace add Two-Weeks-Team/PitchForgeForClaudeCode
 
 # 2. Install the plugin
-/plugin install pitch@two-weeks-team
+/plugin install pitch@pitchforge
 
 # 3. Reload so hooks, agents, and commands refresh
 /reload-plugins
@@ -73,20 +73,24 @@ ships an entire methodology around finding *your* version of this line.
 /pitch:new "your project in one line"
 ```
 
+> Sibling Preview Forge uses a separate marketplace named `two-weeks-team`
+> (`pf@two-weeks-team`). PitchForge's marketplace is named `pitchforge` so
+> the two can coexist on the same machine.
+
 ### Update / pin a version
 
 ```bash
 # Update to the latest published version
-/plugin update pitch@two-weeks-team
+/plugin update pitch@pitchforge
 
 #   — or, if update is not available in your Claude Code version —
-/plugin uninstall pitch@two-weeks-team
-/plugin install pitch@two-weeks-team
+/plugin uninstall pitch@pitchforge
+/plugin install pitch@pitchforge
 /reload-plugins
 
 # Pin a specific past version (any tag from GitHub Releases)
-/plugin uninstall pitch@two-weeks-team
-/plugin install pitch@two-weeks-team@0.1.0
+/plugin uninstall pitch@pitchforge
+/plugin install pitch@pitchforge@0.3.0
 ```
 
 Every release is signed via [GitHub Releases](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/releases).
