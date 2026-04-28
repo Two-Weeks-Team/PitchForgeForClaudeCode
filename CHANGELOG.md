@@ -5,6 +5,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 SemVer is auto-bumped via [release-please](https://github.com/googleapis/release-please)
 from Conventional Commit messages.
 
+## [0.3.0](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/compare/v0.2.1...v0.3.0) (2026-04-28)
+
+
+### Features
+
+* rename custom marketplace to 'pitchforge' to coexist with Preview Forge ([7cbe080](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/commit/7cbe080a56d6c1bf582d9b8427c801f610303e0d))
+
 ## [0.2.1](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/compare/v0.2.0...v0.2.1) (2026-04-28)
 
 
