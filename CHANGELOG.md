@@ -5,6 +5,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 SemVer is auto-bumped via [release-please](https://github.com/googleapis/release-please)
 from Conventional Commit messages.
 
+## [0.2.1](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/compare/v0.2.0...v0.2.1) (2026-04-28)
+
+
+### Bug Fixes
+
+* **security:** allowlist HTML escape on user-input substitution paths ([996a3dd](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/commit/996a3dd7e254b56b4896262d42afa1eb6b17db20))
+
 ## [0.2.0](https://github.com/Two-Weeks-Team/PitchForgeForClaudeCode/compare/v0.1.0...v0.2.0) (2026-04-27)
 
 

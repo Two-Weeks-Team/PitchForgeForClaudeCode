@@ -1,7 +1,7 @@
 {
   "name": "pitch",
   "description": "PitchForge — one Socratic interview → 7-phase workflow (Brief / Scenario / Storyboard / Tone / Deck / Animate / Record) → single self-contained HTML deck that doubles as the recording source. Browser-native, OBS-ready, paper-grade hero copy, human-presenter delivery. Built with Opus 4.7.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": {
     "name": "Two-Weeks-Team",
     "email": "app.2weeks@gmail.com",
