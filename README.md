@@ -181,7 +181,7 @@ The "v1.0 target" column is the roster the plugin grows into.
 |---|---:|---:|
 | 13 agents | 13 | 13 |
 | 15 commands | 15 | 15 |
-| 3 hooks | 3 | 3 |
+| 4 hooks | 4 | 4 |
 | 8 methodology docs | 8 | 8 |
 | 4 schemas | 4 | 4 |
 | 9 frame shapes | 9 | 9 |
@@ -198,7 +198,7 @@ Detail:
 | **Agents** | 5-tier — meta (2) + writers (4) + designers (3) + engineers (3) + reviewers (1+) |
 | **Slash commands** | `/pitch:*` namespace (14 documented + `/pitch:help`) |
 | **Skills** | `cinematic-pitch` (the entry-point skill) |
-| **Hooks** | `stale-count-detector`, `tone-ai-detector`, `cmd-modifier-guard` |
+| **Hooks** | `stale-count-detector`, `tone-ai-detector`, `cmd-modifier-guard`, `html-escape-validator` |
 | **Methodology docs** | brief / arcs / hero copy / tone / color / shapes / timing / recording |
 | **Frame shape templates** | chain, stack, counter, gallery, diagram, modal+JSON, triple-pane, terminal+browser, repo+install |
 | **Narrative arc templates** | wow-first (v0.1), problem-first / story / teaser (v0.5) |

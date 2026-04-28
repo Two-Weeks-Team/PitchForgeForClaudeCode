@@ -1,0 +1,15 @@
+{
+  "_schema_version": "0.1.0",
+  "_filled_ratio": 0.5,
+  "project_name": "Evil<script>alert('xss')</script>Project",
+  "project_one_liner": "Innocent <img src=x onerror=alert(1)> looking one-liner",
+  "audience": "hackathon-judges",
+  "runtime_seconds": 60,
+  "narrative_arc": "wow-first",
+  "hero_copy": "Evil </script><img src=x onerror=alert(1)> hero",
+  "hero_pattern": "paper-title-inversion",
+  "color_palette": "oklch-warm-gold",
+  "tone": "agro-drop-thrill",
+  "version": "<svg onload=alert(2)>",
+  "tagline": "tag <script>alert(3)</script> line"
+}

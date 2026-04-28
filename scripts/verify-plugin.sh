@@ -10,7 +10,7 @@
 #   5. Schemas validate as JSON (4 target by v0.1.0)
 #   6. Agents (13 target — 5-tier)
 #   7. Commands (15 target = 14 listed + help)
-#   8. Hooks (3 target — Layer-0)
+#   8. Hooks (4 target — Layer-0)
 #   9. Templates (deck-shell + 5 frame shapes + 1 arc + 1 palette)
 
 set -euo pipefail
@@ -93,9 +93,9 @@ command_count=$(find "$PLUGIN_DIR/commands" -name "*.md" 2>/dev/null | wc -l | t
 [[ "$command_count" -eq 15 ]] && ok "commands: 15 (target met)" || bad "commands: $command_count (target 15)"
 echo
 
-echo "[8/9] Hooks (3 target)"
+echo "[8/9] Hooks (4 target)"
 hook_count=$(find "$PLUGIN_DIR/hooks" -name "*.py" 2>/dev/null | wc -l | tr -d ' ')
-[[ "$hook_count" -eq 3 ]] && ok "hooks: 3 (target met)" || bad "hooks: $hook_count (target 3)"
+[[ "$hook_count" -eq 4 ]] && ok "hooks: 4 (target met)" || bad "hooks: $hook_count (target 4)"
 echo
 
 echo "[9/9] Templates (deck-shell + 5 frame shapes + 1 arc + 1 palette)"

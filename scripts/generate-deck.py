@@ -70,6 +70,75 @@ def fmt_time_range(start: float, end: float) -> str:
     return f"{fmt_time(start)} – {fmt_time(end)}"
 
 
+# ---------- HTML escaping (Layer-0 against XSS) --------------------------- #
+#
+# Brief-borne strings (project_name, hero_copy, project_one_liner, judging
+# criteria, audience labels, etc.) flow into deck-cinematic.html via
+# substitution. Tier 1 Auto today, Tier 2 Guided tomorrow — both feed user
+# text into the same template sinks. Without escaping, a brief.json with
+# `"hero_copy": "<script>alert(1)</script>"` renders that script verbatim.
+#
+# Strategy: ALLOWLIST. The deck shell deliberately uses a tiny markup set
+# inside trusted *arc-template* content (voiceover lines, hero accents,
+# stat lines, headlines). User-typed brief input is escaped on the way in;
+# the trusted markup tokens are then post-substituted as raw HTML.
+#
+# Two helpers:
+#   1. `escape_user_text()` — for *user input* (brief fields). Hard escape.
+#   2. `escape_with_inline_markup()` — for *arc-template content* mixing
+#      author markup (<b>/<i>/<br>) with user-substituted slots (e.g.
+#      "Look. <b>{{hero_copy}}</b>" where hero_copy may be malicious).
+#      The author tags survive; substituted content is escaped before
+#      splicing.
+
+import html as _html_mod  # noqa: E402
+
+# The tags arc templates use in stock_voiceover / stock_script_h2 / etc.
+# Keep this list minimal — anything not here gets escaped if encountered.
+_INLINE_MARKUP_ALLOWLIST = ("<b>", "</b>", "<i>", "</i>", "<br>", "<br/>", "<br />")
+
+
+def escape_user_text(s: Any) -> str:
+    """Escape a user-typed string for safe HTML interpolation.
+
+    Use for: project_name, project_one_liner, hero_copy bare values,
+    judging criteria names, audience labels, brief-derived prose.
+    """
+    if s is None:
+        return ""
+    return _html_mod.escape(str(s), quote=True)
+
+
+def escape_with_inline_markup(s: Any) -> str:
+    """Escape a string while preserving the small set of arc-template
+    inline tags listed in `_INLINE_MARKUP_ALLOWLIST`.
+
+    Approach: hard-escape the whole string, then unescape the allowed
+    tag tokens back to raw markup. This guarantees that any unexpected
+    tag (e.g. `<script>`, `<img onerror=...>`) stays escaped, while
+    `<b>`, `</b>`, `<i>`, `</i>`, `<br>` survive intact.
+    """
+    if s is None:
+        return ""
+    escaped = _html_mod.escape(str(s), quote=True)
+    for tag in _INLINE_MARKUP_ALLOWLIST:
+        escaped_tag = _html_mod.escape(tag, quote=True)
+        escaped = escaped.replace(escaped_tag, tag)
+    return escaped
+
+
+def safe_json_for_script(obj: Any) -> str:
+    """JSON-encode for embedding inside a `<script>` block.
+
+    Plain `json.dumps` leaves `</` literal — a `</script>` substring inside
+    a string value would break out of the script context. Replace `</` with
+    `<\\/` (an escape sequence valid in JS string literals) and Unicode-escape
+    `<` `>` so neither side of a tag boundary can be smuggled in.
+    """
+    raw = json.dumps(obj, ensure_ascii=False)
+    return raw.replace("</", "<\\/").replace(" ", "\\u2028").replace(" ", "\\u2029")
+
+
 def _resolve_arc_template(arc_name: str, runtime: int) -> Path:
     """Pick the arc template whose declared runtime is closest to `runtime`.
 
@@ -181,6 +250,11 @@ def build_frame_spec(brief: dict) -> dict:
         time_start = cursor
         cursor += duration
 
+        # frame-spec.json keeps RAW user input (more readable + cleaner for
+        # /pitch:replay diffs). HTML escaping is applied at render time via
+        # escape_with_inline_markup / escape_user_text. This avoids the
+        # double-escape pitfall ("&lt;" → "&amp;lt;") when frame-spec values
+        # are re-rendered into HTML downstream.
         voiceover = (beat.get("stock_voiceover") or "").replace("{{hero_copy}}", hero_copy)
         heading = (beat.get("stock_heading") or "").replace("{{project_name}}", project)
         accent = beat.get("stock_heading_accent_word") or ""
@@ -285,9 +359,10 @@ def build_deck_config(brief: dict, spec: dict) -> dict:
             label = f["heading"]
         else:
             label = brief.get("hero_copy", "")
-        # Strip any HTML
+        # Strip any HTML and escape — summaries land in a JS string array
+        # that's also rendered into DOM (overview tile innerHTML).
         label = re.sub(r"<[^>]+>", "", label).strip() or brief.get("hero_copy", "")
-        summaries.append([title, label])
+        summaries.append([escape_user_text(title), escape_user_text(label)])
 
     # Ranges from arc template; map to actual positions.
     ranges_arc = arc.get("ranges", {})
@@ -295,14 +370,17 @@ def build_deck_config(brief: dict, spec: dict) -> dict:
     full = ranges_arc.get("full") or {"start_position": 2, "end_position": len(frames) - 1, "label": "full", "button_label": "▶ Full", "key": "f"}
 
     hero = spec["hero"]
+    safe_project = escape_user_text(spec["project_name"])
     return {
         "_schema_version": SCHEMA_VERSION,
         "_frame_spec_run_id": spec.get("_brief_run_id", "tier1-auto"),
-        "title": f"{spec['project_name']} · Storyboard Deck — {int(spec['runtime_seconds'])}s · {spec['narrative_arc']}",
-        "subtitle": spec.get("subtitle", ""),
-        "id_label": f"{spec['project_name'].upper()} · STORYBOARD DECK",
-        "version_label": brief.get("version", "v0.1.0"),
-        "tagline": brief.get("tagline", f"{spec['narrative_arc'].upper().replace('-', ' ')} ARC · v0.1.0"),
+        # All four header/footer text fields below are escaped at build time
+        # so the render stage can splice them raw without re-encoding.
+        "title": f"{safe_project} · Storyboard Deck — {int(spec['runtime_seconds'])}s · {escape_user_text(spec['narrative_arc'])}",
+        "subtitle": escape_user_text(spec.get("subtitle", "")),
+        "id_label": f"{escape_user_text(spec['project_name'].upper())} · STORYBOARD DECK",
+        "version_label": escape_user_text(brief.get("version", "v0.1.0")),
+        "tagline": escape_user_text(brief.get("tagline", f"{spec['narrative_arc'].upper().replace('-', ' ')} ARC · v0.1.0")),
         "palette": palette,
         "slide_duration_seconds": durations,
         "summaries": summaries,
@@ -330,10 +408,12 @@ def _hero_with_accent_html(hero: dict) -> str:
     idx = hero.get("accent_word_index", 0)
     out = []
     for i, w in enumerate(words):
+        # Each word is user-controlled (split from brief.hero_copy).
+        safe_w = escape_user_text(w)
         if i == idx:
-            out.append(f"<i>{w}</i>")
+            out.append(f"<i>{safe_w}</i>")
         else:
-            out.append(w)
+            out.append(safe_w)
     return " ".join(out)
 
 
@@ -359,10 +439,11 @@ def _build_cover(brief: dict, spec: dict, frames: list[dict], total: float) -> d
 
 
 def _build_close(brief: dict, spec: dict, total: float) -> dict:
-    project = spec["project_name"]
-    hero_inline = _hero_with_accent_html(spec["hero"])
+    safe_project = escape_user_text(spec["project_name"])
+    safe_hero = escape_user_text(spec["hero"]["copy"].upper())
     return {
-        "headline": f"Now go record it — and let the room <i>feel</i> it.",
+        # headline/stat_line/checks are trusted static markup (we author them).
+        "headline": "Now go record it — and let the room <i>feel</i> it.",
         "stat_line": f"<b>{int(total)} seconds.</b> &nbsp;<b>{len(spec['frames']) - 2} frames.</b> &nbsp;<b>One line.</b>",
         "checks": [
             "OBS · 1080p · 30 fps · H.264 · two-pass",
@@ -371,15 +452,16 @@ def _build_close(brief: dict, spec: dict, total: float) -> dict:
             "Browser · cache cleared · dark theme",
             "Claude Code · agent panel + file tree visible",
             "5 takes minimum · best of 5",
-            f"Title card · End card holds 2 s",
+            "Title card · End card holds 2 s",
             "YouTube unlisted · description ends with hero line",
             "Pause <b>before</b> the hero line, never after",
             "Drop the tool — confidence beats polish",
             "Quiet awe, not pride",
             "Honest variant if score under target — stronger story",
         ],
-        "call": f"★ \"{spec['hero']['copy'].upper()}\"  ·  THIS IS THE LAST WORD ON SCREEN ★",
-        "repo_line": f"github.com/Two-Weeks-Team/{project}ForClaudeCode · v0.1.0 · Apache-2.0",
+        # call + repo_line interpolate user fields (hero_copy, project_name).
+        "call": f"★ \"{safe_hero}\"  ·  THIS IS THE LAST WORD ON SCREEN ★",
+        "repo_line": f"github.com/Two-Weeks-Team/{safe_project}ForClaudeCode · v0.1.0 · Apache-2.0",
     }
 
 
@@ -389,11 +471,13 @@ def render_hero_words_html(words: list[str], accent_idx: int) -> str:
     """Build the F4 hero canvas's per-word reveal markup."""
     parts = []
     for i, w in enumerate(words):
+        # Each word is user-controlled (split from brief.hero_copy).
+        safe_w = escape_user_text(w)
         # Add trailing nbsp between words (last word ends with the literal text)
         is_last = i == len(words) - 1
-        text = w if is_last else f"{w}&nbsp;"
+        text = safe_w if is_last else f"{safe_w}&nbsp;"
         if i == accent_idx:
-            text = f"<i>{w}</i>{'' if is_last else '&nbsp;'}"
+            text = f"<i>{safe_w}</i>{'' if is_last else '&nbsp;'}"
         parts.append(f'<span class="w" style="--n:{i}">{text}</span>')
     return "".join(parts)
 
@@ -448,10 +532,15 @@ def render_chain_frame(frame: dict, *, variant: str, blocks: list[str], terminal
     """Render a chain-shape canvas (F1 problem variant or F3 pivot variant)."""
     accent_word = frame.get("heading_accent_word") or ""
     heading = frame.get("heading") or ""
-    if accent_word and accent_word in heading:
-        heading_html = heading.replace(accent_word, f'<span class="accent">{accent_word}</span>')
+    # Heading is user-controlled (brief.frames[*].heading or arc-template
+    # text with {{project_name}} substituted). Escape both the heading and
+    # the accent token, then re-inject the trusted <span class="accent"> markup.
+    safe_heading = escape_user_text(heading)
+    safe_accent = escape_user_text(accent_word)
+    if safe_accent and safe_accent in safe_heading:
+        heading_html = safe_heading.replace(safe_accent, f'<span class="accent">{safe_accent}</span>')
     else:
-        heading_html = heading
+        heading_html = safe_heading
 
     block_html = []
     delays = [1.0, 1.6, 2.2]
@@ -487,17 +576,22 @@ def render_chain_frame(frame: dict, *, variant: str, blocks: list[str], terminal
 def render_stack_strikethrough_frame(frame: dict, rows: list[dict[str, str]]) -> str:
     accent_word = frame.get("heading_accent_word") or ""
     heading = frame.get("heading") or ""
+    safe_heading = escape_user_text(heading)
+    safe_accent = escape_user_text(accent_word)
     heading_html = (
-        heading.replace(accent_word, f'<span class="accent">{accent_word}</span>')
-        if accent_word and accent_word in heading
-        else heading
+        safe_heading.replace(safe_accent, f'<span class="accent">{safe_accent}</span>')
+        if safe_accent and safe_accent in safe_heading
+        else safe_heading
     )
     row_html = []
     for i, row in enumerate(rows):
         delay = 1.0 + i * 1.0
+        # Row labels/values come from SHAPE_PROPS_DEFAULTS today (trusted),
+        # but escaping is cheap insurance for any future user-supplied source.
         row_html.append(
             f'<div class="row" data-anim="right" style="--d:{delay}s">'
-            f'<span>{row["label"]}</span><span class="v">{row["value"]}</span></div>'
+            f'<span>{escape_user_text(row["label"])}</span>'
+            f'<span class="v">{escape_user_text(row["value"])}</span></div>'
         )
     return f'''
         <div class="canvas-frame c-f2">
@@ -755,8 +849,12 @@ def render_canvas_for_frame(frame: dict, *, deck_config: dict) -> str:
             deck_config["hero"]["accent_word_index"],
         )
         tiles = render_hero_tiles()
+        # tagline was already escaped at build_deck_config time.
         echo_mini = deck_config.get("tagline", "")
-        vo_overlay = frame.get("voiceover", "")
+        # voiceover may carry trusted <b>/<i> markup; user-substituted tokens
+        # (hero_copy) inside it have already been escape_with_inline_markup'd
+        # at build_frame_spec time. Defensive: do it again here.
+        vo_overlay = escape_with_inline_markup(frame.get("voiceover", ""))
         return f'''
         <div class="hero-canvas-full">
           <div class="grid">
@@ -797,15 +895,13 @@ def render_canvas_for_frame(frame: dict, *, deck_config: dict) -> str:
     if shape == "terminal-browser":
         return render_terminal_browser_frame()
     if shape == "repo-install":
-        hero_echo = _hero_with_accent_html(
-            {"split_words": deck_config["hero"]["split_words"], "accent_word_index": deck_config["hero"]["accent_word_index"]}
-        )
-        # Use the literal hero copy preserving accent
+        # Hero echo for the outro lockup — words are user-controlled, escape.
         hero_words = deck_config["hero"]["split_words"]
         idx = deck_config["hero"]["accent_word_index"]
         hero_html_words = []
         for i, w in enumerate(hero_words):
-            hero_html_words.append(f"<i>{w}</i>" if i == idx else w)
+            safe_w = escape_user_text(w)
+            hero_html_words.append(f"<i>{safe_w}</i>" if i == idx else safe_w)
         hero_html = " ".join(hero_html_words)
         return render_repo_install_frame(deck_config, hero_html)
     return ""
@@ -888,31 +984,48 @@ def render_content_slide(frame: dict, deck_config: dict, *, position: int, total
     show_echo = frame.get("show_echo_ribbon", True) and cls != "hero" and cls != "cover" and cls != "close"
     echo_html = ""
     if show_echo:
+        # echo_ribbon_text was built by _hero_with_accent_html which already
+        # escapes the user-controlled hero words and re-applies <i> as
+        # trusted markup. Splice raw.
         echo_html = f'<span class="echo">{deck_config["hero"]["echo_ribbon_text"]}</span>'
 
     time_label = fmt_time_range(frame["time_start_seconds"], frame["time_start_seconds"] + frame["duration_seconds"])
-    id_label_full = f"{fid} · {(frame.get('meta_tag') or '').upper().replace('ACT II ·', '·').replace('ACT III ·', '·').replace('ACT IV ·', '·').replace('ACT V ·', '·').strip()}"
-    if not (frame.get("meta_tag") or "").strip():
-        id_label_full = fid
+    safe_meta_upper = escape_user_text(
+        (frame.get('meta_tag') or '').upper()
+        .replace('ACT II ·', '·')
+        .replace('ACT III ·', '·')
+        .replace('ACT IV ·', '·')
+        .replace('ACT V ·', '·')
+        .strip()
+    )
+    id_label_full = f"{escape_user_text(fid)} · {safe_meta_upper}" if safe_meta_upper else escape_user_text(fid)
     counter = f"{position:02d} / {total}"
 
     canvas = render_canvas_for_frame(frame, deck_config=deck_config)
 
-    # Hero slide hides script panel
+    # Hero slide hides script panel.
+    # meta_tag / script_h2 / delivery_note / tone_note are user-text — escape.
+    # voiceover may contain trusted <b>/<i> markup — allowlist escape.
     script_panel = ""
     if cls != "hero":
         script_panel = f'''
       <div class="script-wrap">
-        <div class="meta-tag">{frame.get("meta_tag", "")}</div>
-        <h2>{frame.get("script_h2", "")}</h2>
-        <div class="vo">{frame.get("voiceover", "")}</div>
+        <div class="meta-tag">{escape_user_text(frame.get("meta_tag", ""))}</div>
+        <h2>{escape_user_text(frame.get("script_h2", ""))}</h2>
+        <div class="vo">{escape_with_inline_markup(frame.get("voiceover", ""))}</div>
         <div class="stage">
-          <b>Delivery:</b> {frame.get("delivery_note", "")}
-          <span class="tone">tone: {frame.get("tone_note", "")}</span>
+          <b>Delivery:</b> {escape_user_text(frame.get("delivery_note", ""))}
+          <span class="tone">tone: {escape_user_text(frame.get("tone_note", ""))}</span>
         </div>
       </div>'''
 
-    navbar_keys = frame.get("navbar_keys_label") or "<kbd>←</kbd> · <kbd>→</kbd> · <kbd>esc</kbd>"
+    # navbar_keys_label is sometimes user-controlled (e.g. "★ OPENING WOW · ...")
+    # but the default is a trusted <kbd> markup string.
+    raw_keys = frame.get("navbar_keys_label")
+    if raw_keys:
+        navbar_keys = escape_user_text(raw_keys)
+    else:
+        navbar_keys = "<kbd>←</kbd> · <kbd>→</kbd> · <kbd>esc</kbd>"
     if frame.get("navbar_keys_label"):
         keys_attrs = ' style="color:var(--gold);font-weight:700"'
     else:
@@ -1024,23 +1137,29 @@ def render_deck_html(spec: dict, deck_config: dict, recording_config: dict) -> s
 
     short = lambda label: label.split("·")[0].strip() if "·" in label else label
 
+    # User-text fields (title, ranges.*.label, etc.) were already escaped at
+    # build_deck_config / arc-template substitution time. Here we apply
+    # safe_json_for_script to anything landing inside <script>...</script>
+    # so a malicious string with </script> can't break out of the JS context.
+    # Range labels are *also* used as plain HTML (countdown overlay text),
+    # so they go through escape_user_text not safe_json_for_script.
     replacements = {
         "{{title}}": deck_config["title"],
         "{{frames}}": frames_html,
         "{{slide_count}}": str(slide_count),
-        "{{ranges.opening.label}}": opening["label"],
-        "{{ranges.opening.short_label}}": short(opening["label"]),
-        "{{ranges.opening.button_label}}": opening.get("button_label", "▶ Opening"),
+        "{{ranges.opening.label}}": escape_user_text(opening["label"]),
+        "{{ranges.opening.short_label}}": escape_user_text(short(opening["label"])),
+        "{{ranges.opening.button_label}}": escape_user_text(opening.get("button_label", "▶ Opening")),
         "{{ranges.opening.start_position_zero_indexed}}": str(opening["start_position"] - 1),
         "{{ranges.opening.end_position_zero_indexed}}": str(opening["end_position"] - 1),
-        "{{ranges.full.label}}": full["label"],
-        "{{ranges.full.short_label}}": short(full["label"]),
-        "{{ranges.full.button_label}}": full.get("button_label", "▶ Full"),
+        "{{ranges.full.label}}": escape_user_text(full["label"]),
+        "{{ranges.full.short_label}}": escape_user_text(short(full["label"])),
+        "{{ranges.full.button_label}}": escape_user_text(full.get("button_label", "▶ Full")),
         "{{ranges.full.start_position_zero_indexed}}": str(full["start_position"] - 1),
         "{{ranges.full.end_position_zero_indexed}}": str(full["end_position"] - 1),
-        "{{slide_duration_seconds}}": json.dumps(deck_config["slide_duration_seconds"]),
-        "{{summaries}}": json.dumps(deck_config["summaries"], ensure_ascii=False),
-        "{{countdown_sequence}}": json.dumps(countdown["sequence"]),
+        "{{slide_duration_seconds}}": safe_json_for_script(deck_config["slide_duration_seconds"]),
+        "{{summaries}}": safe_json_for_script(deck_config["summaries"]),
+        "{{countdown_sequence}}": safe_json_for_script(countdown["sequence"]),
         "{{countdown_cadence_ms}}": str(countdown["cadence_ms"]),
         "{{capture_enabled_js}}": "true" if recording_config.get("capture", {}).get("enabled") else "false",
     }
